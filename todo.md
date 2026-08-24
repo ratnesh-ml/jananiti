@@ -35,3 +35,23 @@
 - [ ] Add a delivery roadmap that distinguishes the hackathon MVP, the next platform build phase, and deferred external integrations from the complete slide-deck vision.
 - [x] Update the architecture document with a complete slide-deck coverage matrix that maps each module, input, DRFI factor, role, and workflow to a verified feature, configurable framework, or external-service adapter.
 - [x] Add a delivery roadmap that distinguishes the hackathon MVP, the next platform build phase, and deferred external integrations from the complete slide-deck vision.
+- [x] Define privacy-safe community-feed rules for public issue visibility, pseudonymous participation, vote integrity, proximity matching, and abuse prevention.
+- [x] Create persistent community interaction entities for issue reactions, verification responses, neighbourhood alerts, badge achievements, and aggregate feed counters.
+- [x] Build a polished Instagram-inspired local feed with civic cards, media context, reaction controls, public updates, and proximity-aware discovery.
+- [x] Implement a citizen verification prompt that lets nearby users confirm, dispute, or mark an issue as unable to verify without exposing their identity or exact location.
+- [x] Add earned civic badges based on verified, non-spam participation and explain how each badge is awarded.
+- [x] Build a privacy-safe geographic activity and heat-map view, with manual-coordinate support while Google Maps bootstrap is unavailable.
+- [x] Feed verified community signals and DRFI evidence into transparent public priority indicators without allowing raw popularity to replace safety or human review.
+- [ ] Test community participation, duplicate-vote prevention, notification preferences, role gating, and responsive local-feed interactions.
+- [x] Redesign the community feed around familiar image-first, story-like, reaction, and share interaction patterns while retaining original Jananiti branding, copy, and assets.
+- [x] Add Google-inspired local search, location chips, map/area discovery, and information-card hierarchy without copying Google marks, screenshots, or branded components.
+- [ ] Render safe attachment/media previews in community feed cards using stored civic evidence metadata, with clear fallbacks for audio and documents.
+- [ ] Implement genuine privacy-safe locality or ward matching for community-feed discovery and nearby verification eligibility rather than static proximity UI.
+- [ ] Add validation coverage for reaction/verification persistence and locality-aware community discovery behavior.
+- [ ] Add and verify visible public DRFI priority indicators on community-feed and civic-detail records.
+- [ ] Surface aggregate confirmations and disputes as a reviewed demand-evidence input in the DRFI workspace without allowing social engagement to auto-decide priority.
+- [ ] Add tests for community signal aggregation and DRFI priority propagation to public-facing civic records.
+- [x] Add and verify the citizen-facing dispute response so nearby verification covers confirm, dispute, and unable-to-verify in one privacy-safe flow.
+- [x] Implement earning rules for every declared civic badge or remove unsupported badge types from the product model.
+- [x] Add an in-app badge explainer with transparent award criteria and anti-spam/review conditions.
+- [ ] Verify the complete locality-eligible confirm/dispute/unable-to-verify flow in preview and add mutation-level test coverage for the one-response-per-record rule.

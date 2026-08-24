@@ -7,6 +7,8 @@ import { Link, useLocation } from "wouter";
 
 const navigation = [
   { label: "Explore activity", href: "/activity" },
+  { label: "Heat map", href: "/heatmap" },
+  { label: "Verify nearby", href: "/verify" },
   { label: "Track a request", href: "/track" },
   { label: "How it works", href: "/#how-it-works" },
 ];

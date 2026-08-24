@@ -3,11 +3,15 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { nanoid } from "nanoid";
 import {
   civicAttachments,
+  civicReactions,
+  civicVerifications,
+  citizenBadges,
   consentRecords,
   citizenProfiles,
   civicItemUpdates,
   civicItems,
   civicNotifications,
+  localVerificationAlerts,
   drfiAssessments,
   type CivicCategory,
   type CivicPriority,
@@ -17,6 +21,7 @@ import {
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { calculateDrfi } from "./drfiMath";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -126,6 +131,7 @@ export async function createCivicItem(input: {
   locationLabel: string;
   latitude?: number | null;
   longitude?: number | null;
+  locality?: string | null;
   visibility: "public" | "private";
   sourceChannel: "web" | "whatsapp" | "sms" | "telegram" | "ivrs" | "field_worker" | "social";
   contentType: "text" | "voice" | "image" | "mixed";
@@ -140,6 +146,7 @@ export async function createCivicItem(input: {
     title: input.title,
     description: input.description,
     locationLabel: input.locationLabel,
+    locality: input.locality ?? null,
     latitude: input.latitude == null ? null : input.latitude.toFixed(7),
     longitude: input.longitude == null ? null : input.longitude.toFixed(7),
     visibility: input.visibility,
@@ -163,6 +170,11 @@ export async function createCivicItem(input: {
     title: "Request received",
     message: `${publicId} has been received and is ready for review.`,
   });
+  await db.insert(citizenBadges).values({
+    userId: input.citizenId,
+    badge: "first_report",
+    rationale: "Submitted a first civic report.",
+  }).onDuplicateKeyUpdate({ set: { rationale: "Submitted a first civic report." } });
 
   return { civicItemId, publicId };
 }
@@ -181,6 +193,77 @@ export async function listPublicCivicItems(limit = 24) {
     .where(eq(civicItems.visibility, "public"))
     .orderBy(desc(civicItems.createdAt))
     .limit(limit);
+}
+
+export async function getCommunitySignals(civicItemId: number, viewerId?: number) {
+  const db = await getDb();
+  if (!db) return { up: 0, down: 0, confirm: 0, dispute: 0, unableToVerify: 0, viewerReaction: null as "up" | "down" | null, viewerVerification: null as "confirm" | "dispute" | "unable_to_verify" | null };
+  const [reactions, verifications] = await Promise.all([
+    db.select().from(civicReactions).where(eq(civicReactions.civicItemId, civicItemId)),
+    db.select().from(civicVerifications).where(eq(civicVerifications.civicItemId, civicItemId)),
+  ]);
+  return {
+    up: reactions.filter(entry => entry.reaction === "up").length,
+    down: reactions.filter(entry => entry.reaction === "down").length,
+    confirm: verifications.filter(entry => entry.response === "confirm").length,
+    dispute: verifications.filter(entry => entry.response === "dispute").length,
+    unableToVerify: verifications.filter(entry => entry.response === "unable_to_verify").length,
+    viewerReaction: viewerId ? reactions.find(entry => entry.userId === viewerId)?.reaction ?? null : null,
+    viewerVerification: viewerId ? verifications.find(entry => entry.userId === viewerId)?.response ?? null : null,
+  };
+}
+
+export async function listCommunityFeed(viewerId?: number, limit = 30) {
+  const db = await getDb();
+  if (!db) return [];
+  const profile = viewerId ? await getCitizenProfile(viewerId) : undefined;
+  const items = profile?.locality
+    ? await db.select().from(civicItems).where(and(eq(civicItems.visibility, "public"), eq(civicItems.locality, profile.locality))).orderBy(desc(civicItems.createdAt)).limit(limit)
+    : await listPublicCivicItems(limit);
+  return Promise.all(items.map(async item => {
+    const attachments = await listCivicAttachments(item.id);
+    const image = attachments.find(attachment => attachment.kind === "image");
+    return {
+      ...item,
+      signals: await getCommunitySignals(item.id, viewerId),
+      evidence: image ? { kind: image.kind, originalName: image.originalName, url: `/manus-storage/${image.storageKey}` } : null,
+      attachmentCount: attachments.length,
+    };
+  }));
+}
+
+export async function setCivicReaction(input: { civicItemId: number; userId: number; reaction: "up" | "down" }) {
+  const db = await getDb(); ensureDb(db);
+  await db.insert(civicReactions).values(input).onDuplicateKeyUpdate({ set: { reaction: input.reaction, updatedAt: new Date() } });
+  return getCommunitySignals(input.civicItemId, input.userId);
+}
+
+export async function setCivicVerification(input: { civicItemId: number; userId: number; response: "confirm" | "dispute" | "unable_to_verify" }) {
+  const db = await getDb(); ensureDb(db);
+  await db.insert(civicVerifications).values(input).onDuplicateKeyUpdate({ set: { response: input.response, updatedAt: new Date() } });
+  if (input.response === "confirm") {
+    await db.insert(citizenBadges).values({ userId: input.userId, badge: "neighborhood_ally", rationale: "Helped verify a nearby civic issue." }).onDuplicateKeyUpdate({ set: { rationale: "Helped verify a nearby civic issue." } });
+    const confirmations = await db.select().from(civicVerifications).where(and(eq(civicVerifications.userId, input.userId), eq(civicVerifications.response, "confirm")));
+    if (confirmations.length >= 3) await db.insert(citizenBadges).values({ userId: input.userId, badge: "trusted_verifier", rationale: "Provided three distinct confirmation signals for civic records." }).onDuplicateKeyUpdate({ set: { rationale: "Provided three distinct confirmation signals for civic records." } });
+    if (confirmations.length >= 10) await db.insert(citizenBadges).values({ userId: input.userId, badge: "civic_steward", rationale: "Provided ten distinct confirmation signals for civic records." }).onDuplicateKeyUpdate({ set: { rationale: "Provided ten distinct confirmation signals for civic records." } });
+  }
+  return getCommunitySignals(input.civicItemId, input.userId);
+}
+
+export async function listCitizenBadges(userId: number) {
+  const db = await getDb(); if (!db) return [];
+  return db.select().from(citizenBadges).where(eq(citizenBadges.userId, userId)).orderBy(desc(citizenBadges.earnedAt));
+}
+
+export async function dispatchLocalVerificationAlert(input: { civicItemId: number; locality: string; reporterId: number }) {
+  const db = await getDb(); ensureDb(db);
+  const existing = await db.select().from(localVerificationAlerts).where(and(eq(localVerificationAlerts.civicItemId, input.civicItemId), eq(localVerificationAlerts.locality, input.locality))).limit(1);
+  if (existing.length) return 0;
+  await db.insert(localVerificationAlerts).values({ civicItemId: input.civicItemId, locality: input.locality });
+  const residents = await db.select().from(citizenProfiles).where(and(eq(citizenProfiles.locality, input.locality), eq(citizenProfiles.inAppNotifications, true)));
+  const recipientIds = residents.filter(resident => resident.userId !== input.reporterId).map(resident => resident.userId);
+  if (recipientIds.length) await db.insert(civicNotifications).values(recipientIds.map(recipientId => ({ recipientId, civicItemId: input.civicItemId, type: "verification" as const, title: "Can you verify an issue nearby?", message: `A public civic report was filed in ${input.locality}. Confirm, dispute, or mark it as unable to verify.` })));
+  return recipientIds.length;
 }
 
 export async function listCitizenCivicItems(citizenId: number) {
@@ -398,10 +481,10 @@ export type DrfiInput = {
 export async function saveDrfiAssessment(input: DrfiInput) {
   const db = await getDb();
   ensureDb(db);
-  const score = Math.round(input.demand * .20 + input.populationImpact * .15 + input.infrastructureGap * .15 + input.serviceAccess * .10 + input.budgetFeasibility * .10 + input.geospatialReality * .10 + input.trendGrowth * .10 + input.riskUrgency * .10);
-  const priority: CivicPriority = score >= 75 ? "urgent" : score >= 55 ? "high" : score >= 30 ? "standard" : "low";
+  const { score, priority } = calculateDrfi(input);
   const values = { ...input, score, priority, weightVersion: "v1", reviewedAt: new Date() };
   await db.insert(drfiAssessments).values(values).onDuplicateKeyUpdate({ set: values });
+  await db.update(civicItems).set({ priority }).where(eq(civicItems.id, input.civicItemId));
   return values;
 }
 

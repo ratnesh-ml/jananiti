@@ -10,6 +10,8 @@ import Operations from "./pages/Operations";
 import Assignments from "./pages/Assignments";
 import Priorities from "./pages/Priorities";
 import PublicActivity from "./pages/PublicActivity";
+import Heatmap from "./pages/Heatmap";
+import VerifyNearby from "./pages/VerifyNearby";
 import SubmitIssue from "./pages/SubmitIssue";
 import TrackIssue from "./pages/TrackIssue";
 
@@ -21,6 +23,8 @@ function Router() {
       <Route path={"/report"} component={SubmitIssue} />
       <Route path={"/track"} component={TrackIssue} />
       <Route path={"/activity"} component={PublicActivity} />
+      <Route path={"/heatmap"} component={Heatmap} />
+      <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />
       <Route path={"/operations"} component={Operations} />
       <Route path={"/assignments"} component={Assignments} />

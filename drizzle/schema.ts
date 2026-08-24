@@ -96,6 +96,7 @@ export const civicItems = mysqlTable(
     title: varchar("title", { length: 160 }).notNull(),
     description: text("description").notNull(),
     locationLabel: varchar("locationLabel", { length: 240 }).notNull(),
+    locality: varchar("locality", { length: 160 }),
     latitude: decimal("latitude", { precision: 10, scale: 7 }),
     longitude: decimal("longitude", { precision: 10, scale: 7 }),
     status: mysqlEnum("status", civicStatuses).notNull().default("submitted"),
@@ -112,6 +113,7 @@ export const civicItems = mysqlTable(
     index("civic_items_citizen_idx").on(table.citizenId),
     index("civic_items_status_idx").on(table.status),
     index("civic_items_category_idx").on(table.category),
+    index("civic_items_locality_idx").on(table.locality),
     index("civic_items_created_idx").on(table.createdAt),
   ]
 );
@@ -140,6 +142,39 @@ export const civicItemUpdates = mysqlTable(
     index("civic_item_updates_created_idx").on(table.createdAt),
   ]
 );
+
+export const civicReactions = mysqlTable("civic_reactions", {
+  id: int("id").autoincrement().primaryKey(),
+  civicItemId: int("civicItemId").notNull().references(() => civicItems.id, { onDelete: "cascade" }),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  reaction: mysqlEnum("reaction", ["up", "down"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [uniqueIndex("civic_reactions_item_user_idx").on(table.civicItemId, table.userId), index("civic_reactions_item_idx").on(table.civicItemId)]);
+
+export const civicVerifications = mysqlTable("civic_verifications", {
+  id: int("id").autoincrement().primaryKey(),
+  civicItemId: int("civicItemId").notNull().references(() => civicItems.id, { onDelete: "cascade" }),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  response: mysqlEnum("response", ["confirm", "dispute", "unable_to_verify"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [uniqueIndex("civic_verifications_item_user_idx").on(table.civicItemId, table.userId), index("civic_verifications_item_idx").on(table.civicItemId)]);
+
+export const localVerificationAlerts = mysqlTable("local_verification_alerts", {
+  id: int("id").autoincrement().primaryKey(),
+  civicItemId: int("civicItemId").notNull().references(() => civicItems.id, { onDelete: "cascade" }),
+  locality: varchar("locality", { length: 160 }).notNull(),
+  dispatchedAt: timestamp("dispatchedAt").defaultNow().notNull(),
+}, table => [uniqueIndex("local_verification_alert_item_locality_idx").on(table.civicItemId, table.locality)]);
+
+export const citizenBadges = mysqlTable("citizen_badges", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  badge: mysqlEnum("badge", ["first_report", "neighborhood_ally", "trusted_verifier", "civic_steward"]).notNull(),
+  rationale: varchar("rationale", { length: 240 }).notNull(),
+  earnedAt: timestamp("earnedAt").defaultNow().notNull(),
+}, table => [uniqueIndex("citizen_badges_user_badge_idx").on(table.userId, table.badge), index("citizen_badges_user_idx").on(table.userId)]);
 
 export const civicAttachments = mysqlTable(
   "civic_attachments",
@@ -186,7 +221,7 @@ export const civicNotifications = mysqlTable(
     id: int("id").autoincrement().primaryKey(),
     recipientId: int("recipientId").notNull().references(() => users.id, { onDelete: "cascade" }),
     civicItemId: int("civicItemId").references(() => civicItems.id, { onDelete: "cascade" }),
-    type: mysqlEnum("type", ["receipt", "assignment", "status", "resolution", "update"]).notNull(),
+    type: mysqlEnum("type", ["receipt", "assignment", "status", "resolution", "update", "verification"]).notNull(),
     title: varchar("title", { length: 160 }).notNull(),
     message: text("message").notNull(),
     readAt: timestamp("readAt"),

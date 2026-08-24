@@ -7,22 +7,28 @@ import {
   changeCivicItemStatus,
   createCivicItem,
   createCivicNotification,
+  dispatchLocalVerificationAlert,
   getAllUpdates,
   getCitizenProfile,
   getConsentSummary,
   getDrfiAssessment,
   getCivicItemByPublicId,
   getCivicStats,
+  getCommunitySignals,
   getMapCivicItems,
   getPublicUpdates,
   listCitizenCivicItems,
+  listCitizenBadges,
   listCivicNotifications,
+  listCommunityFeed,
   listOperationsCivicItems,
   listPublicCivicItems,
   listTriageInsights,
   markCivicNotificationRead,
   recordConsents,
   saveCitizenProfile,
+  setCivicReaction,
+  setCivicVerification,
   saveDrfiAssessment,
   saveTriageInsight,
 } from "./db";
@@ -81,16 +87,17 @@ export const appRouter = router({
   civicItems: router({
     publicList: publicProcedure.input(z.object({ limit: z.number().int().min(1).max(60).default(24) }).optional())
       .query(({ input }) => listPublicCivicItems(input?.limit ?? 24)),
-    publicDetail: publicProcedure.input(publicIdInput).query(async ({ input }) => {
+    publicDetail: publicProcedure.input(publicIdInput).query(async ({ input, ctx }) => {
       const item = await getCivicItemByPublicId(input.publicId);
       if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
-      return { item, updates: await getPublicUpdates(item.id), insights: await listTriageInsights(item.id) };
+      return { item, updates: await getPublicUpdates(item.id), insights: await listTriageInsights(item.id), signals: await getCommunitySignals(item.id, ctx.user?.id) };
     }),
     mine: protectedProcedure.query(({ ctx }) => listCitizenCivicItems(ctx.user.id)),
     mapActivity: publicProcedure.query(() => getMapCivicItems()),
     stats: publicProcedure.query(() => getCivicStats()),
     create: protectedProcedure.input(createItemInput).mutation(async ({ ctx, input }) => {
-      const created = await createCivicItem({ citizenId: ctx.user.id, ...input });
+      const profile = await getCitizenProfile(ctx.user.id);
+      const created = await createCivicItem({ citizenId: ctx.user.id, locality: profile?.locality ?? null, ...input });
       await createCivicNotification({
         recipientId: ctx.user.id,
         civicItemId: created.civicItemId,
@@ -102,8 +109,24 @@ export const appRouter = router({
         title: "New Jananiti report received",
         content: `${created.publicId}: ${input.title}`,
       });
+      if (input.visibility === "public" && profile?.locality) await dispatchLocalVerificationAlert({ civicItemId: created.civicItemId, locality: profile.locality, reporterId: ctx.user.id });
       return created;
     }),
+  }),
+  community: router({
+    feed: publicProcedure.input(z.object({ limit: z.number().int().min(1).max(60).default(24) }).optional())
+      .query(({ ctx, input }) => listCommunityFeed(ctx.user?.id, input?.limit ?? 24)),
+    react: protectedProcedure.input(publicIdInput.extend({ reaction: z.enum(["up", "down"]) })).mutation(async ({ ctx, input }) => {
+      const item = await getCivicItemByPublicId(input.publicId);
+      if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
+      return setCivicReaction({ civicItemId: item.id, userId: ctx.user.id, reaction: input.reaction });
+    }),
+    verify: protectedProcedure.input(publicIdInput.extend({ response: z.enum(["confirm", "dispute", "unable_to_verify"]) })).mutation(async ({ ctx, input }) => {
+      const item = await getCivicItemByPublicId(input.publicId);
+      if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
+      return setCivicVerification({ civicItemId: item.id, userId: ctx.user.id, response: input.response });
+    }),
+    badges: protectedProcedure.query(({ ctx }) => listCitizenBadges(ctx.user.id)),
   }),
   notifications: router({
     mine: protectedProcedure.query(({ ctx }) => listCivicNotifications(ctx.user.id)),
