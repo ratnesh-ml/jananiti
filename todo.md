@@ -45,7 +45,7 @@
 - [ ] Test community participation, duplicate-vote prevention, notification preferences, role gating, and responsive local-feed interactions.
 - [x] Redesign the community feed around familiar image-first, story-like, reaction, and share interaction patterns while retaining original Jananiti branding, copy, and assets.
 - [x] Add Google-inspired local search, location chips, map/area discovery, and information-card hierarchy without copying Google marks, screenshots, or branded components.
-- [ ] Render safe attachment/media previews in community feed cards using stored civic evidence metadata, with clear fallbacks for audio and documents.
+- [x] Render safe attachment/media previews in community feed cards using stored civic evidence metadata, with clear fallbacks for audio and documents.
 - [ ] Implement genuine privacy-safe locality or ward matching for community-feed discovery and nearby verification eligibility rather than static proximity UI.
 - [ ] Add validation coverage for reaction/verification persistence and locality-aware community discovery behavior.
 - [ ] Add and verify visible public DRFI priority indicators on community-feed and civic-detail records.
@@ -69,8 +69,8 @@
 - [x] Add explicit automatic location permission/capture and manual location/address/coordinate paths, with an understandable privacy choice and graceful map fallback.
 - [ ] Verify desktop and mobile reporting, feed browsing, media selection, and location-capture journeys through the preview.
 - [ ] Ensure all redesigned social-feed and local-discovery surfaces use original Jananiti copy, assets, color system, and component construction while retaining only general interaction conventions.
-- [ ] Add a real saved-draft workflow or explicit draft-state experience to the civic report composer and verify it in preview.
-- [ ] Add media-specific previews or clear fallbacks for image, audio, video, and document evidence, plus honest upload and processing states in the reporter and feed.
+- [x] Add a real saved-draft workflow or explicit draft-state experience to the civic report composer and verify it in preview.
+- [x] Add media-specific previews or clear fallbacks for image, audio, video, and document evidence, plus honest upload and processing states in the reporter and feed.
 - [x] Analyze the supplied government-portal gap, ward-problem, and solution PDFs; map each validated gap to a Jananiti feature, workflow, or documented future integration.
 - [x] Rebuild the Jananiti landing page around the supplied mobile reference: restrained top bar, generous compositional whitespace, centered governance hero, compact primary actions, and original civic visual assets.
 - [x] Reconcile the landing, entry, local feed, reporting, and operations journeys into one coherent mobile-first experience informed by the documented civic gaps and ward priorities.
@@ -90,3 +90,5 @@
 - [ ] Produce the final Google/Firebase credential checklist only after application and development-fallback surfaces are complete and tested.
 - [x] Create and save a traceable ten-screen coverage matrix mapping each reference screen to current routes, supporting files, working interactions, and missing workflows.
 - [x] Extend the Google-first architecture plan with explicit adapter, development fallback, production cutover, and security boundaries for App Check, Analytics, Monitoring/Logging, and Secret Manager.
+- [ ] Add a locality selector/filter and visible area-cluster summary to the Heatmap development fallback, then connect the screen-level map service boundary to the documented Google Maps production cutover.
+- [ ] Introduce a screen-level map service contract that switches Heatmap between the existing development fallback and the future configured Google Maps implementation without changing page-level civic filters or selection behavior.
