@@ -123,3 +123,7 @@
 - [x] Design Vertex AI usage as optional, constrained draft triage and summarization with structured output, no autonomous priority decisions, and no replacement of DRFI or human evidence review.
 - [x] Produce a complete beginner-friendly Google credential inventory and Console setup guide for Firebase Authentication, Firestore, Cloud Storage, Cloud Run/Functions, FCM, Maps, Vertex AI, App Check, Secret Manager, Analytics, Logging, and Vercel deployment.
 - [ ] Begin Google-native adapter implementation only after the user supplies the required configuration through secure project secrets rather than chat.
+- [ ] Remove internal migration and credential-planning documents from the GitHub repository while retaining only judge-appropriate hackathon artifacts.
+- [ ] Rewrite README as a concise Code for Communities judge submission: problem, solution, differentiated features, Google technology roadmap, architecture, DRFI, privacy, demo route, local run, and test command.
+- [ ] Add judge-ready in-app demo copy and a guided walkthrough route that highlights reporting, community validation, DRFI priority, coordinator operations, and the honest Google migration path.
+- [ ] Provide the full beginner Google/Firebase/Cloud setup instructions directly in chat rather than placing credential instructions in the GitHub repository.

@@ -21,13 +21,14 @@ import ActionCenter from "./pages/ActionCenter";
 import SignIn from "./pages/SignIn";
 import Discussion from "./pages/Discussion";
 import Onboarding from "./pages/Onboarding";
+import JudgeDemo from "./pages/JudgeDemo";
 import { useLocation } from "wouter";
 
 function Router() {
   const { user, loading } = useAuth();
   const [location] = useLocation();
   if (loading) return <div className="grid min-h-screen place-items-center bg-[#f6f8fb] px-6 text-center"><div><div className="mx-auto h-10 w-10 animate-pulse rounded-2xl bg-[#0e5bb7]" /><p className="mt-4 text-sm font-bold text-[#54708d]">Preparing your civic space…</p></div></div>;
-  if (!user) return location === "/signin" ? <SignIn /> : <Onboarding />;
+  if (!user) return location === "/judge-demo" ? <JudgeDemo /> : location === "/signin" ? <SignIn /> : <Onboarding />;
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -39,6 +40,7 @@ function Router() {
       <Route path={"/signin"} component={SignIn} />
       <Route path={"/discussion"} component={Discussion} />
       <Route path={"/onboarding"} component={Onboarding} />
+      <Route path={"/judge-demo"} component={JudgeDemo} />
       <Route path={"/heatmap"} component={Heatmap} />
       <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />
