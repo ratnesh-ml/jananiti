@@ -112,3 +112,8 @@
 - [x] Change the unauthenticated entry sequence to show the Jananiti intro/onboarding screen first, then secure sign-in, before allowing the authenticated civic site.
 - [ ] Finish the supplied Explore, Profile, and Locality Map mobile screen compositions using original components, real aggregates, and explicit no-data fallbacks.
 - [x] After UI completion, prepare a beginner-friendly credential guide covering only the required Firebase, Google Maps, Vertex AI, and deployment configuration values, including how to obtain each one safely.
+- [ ] Audit and document the current citizen interface, administrator workspace, backend API, database schema, storage, and Google-service adapter boundaries before external publication.
+- [ ] Add a Code for Communities / Google hackathon-ready README with an honest feature matrix, problem statement, architecture, demo flow, privacy boundaries, setup instructions, test evidence, and roadmap.
+- [ ] Initialize and publish the organized Jananiti source repository to the user’s GitHub account without exposing secrets or generated credentials.
+- [ ] Prepare and validate a Vercel-compatible deployment configuration for the React and Express application, documenting any runtime, environment-variable, database, and storage requirements.
+- [ ] Publish the Vercel deployment only after validating the GitHub handoff and obtaining required external account authorization or credentials securely.
