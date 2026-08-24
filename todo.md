@@ -142,11 +142,11 @@
 - [ ] Configure and verify the Firebase session bridge runtime variables and deployment behavior on the authorized Vercel domain before attempting public Google Sign-In.
 - [ ] Run a real browser E2E check of Firebase Google Sign-In, Jananiti session creation, protected-route access, and sign-out behavior.
 - [x] Synchronize Jananiti logout with Firebase client sign-out to prevent a stale Firebase browser session.
-- [ ] Audit the GitHub repository, judge walkthrough, live-demo URLs, test evidence, and Google-service claims as one directly submittable Code for Communities package.
-- [ ] Resolve or clearly label Vercel and Firestore limitations so judges are never directed to a broken or overstated demo.
+- [x] Audit the GitHub repository, judge walkthrough, live-demo URLs, test evidence, and Google-service claims as one directly submittable Code for Communities package.
+- [x] Resolve or clearly label Vercel and Firestore limitations so judges are never directed to a broken or overstated demo.
 - [ ] Produce a concise evidence-based demo-video storyboard only after the submitted build and walkthrough are verified.
-- [ ] Use only https://jananiti009.vercel.app as the judge-facing live link after its 500 runtime failure is repaired; remove the managed-preview URL from submission-facing materials.
-- [ ] Route the Vercel deployment through a static, no-sign-in judge walkthrough fallback so public evaluation does not invoke the crashing legacy serverless API.
-- [ ] Remove Manus-auth and managed-preview references from all judge-facing routes, README links, and submission copy; keep only the verified Vercel link.
-- [ ] Perform a final public-repository security audit for credential-like strings, environment files, internal setup notes, and secret-bearing artifacts before hackathon submission.
-- [ ] Rewrite the public README and Vercel judge walkthrough around the verified Vercel-only static demo, its test evidence, and clearly bounded Firebase status.
+- [x] Use only https://jananiti009.vercel.app as the judge-facing live link after its 500 runtime failure is repaired; remove the managed-preview URL from submission-facing materials.
+- [x] Route the Vercel deployment through a static, no-sign-in judge walkthrough fallback so public evaluation does not invoke the crashing legacy serverless API.
+- [x] Remove Manus-auth and managed-preview references from all judge-facing routes, README links, and submission copy; keep only the verified Vercel link.
+- [x] Perform a final public-repository security audit for credential-like strings, environment files, internal setup notes, and secret-bearing artifacts before hackathon submission.
+- [x] Rewrite the public README and Vercel judge walkthrough around the verified Vercel-only static demo, its test evidence, and clearly bounded Firebase status.
