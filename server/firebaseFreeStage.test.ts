@@ -28,4 +28,32 @@ describe("Firebase free-stage credentials", () => {
     expect(errorText).toMatch(/missing_request_uri|missing_req_type/i);
     expect(errorText).not.toMatch(/api key not valid|invalid api key|consumer is invalid|project.*not found/i);
   });
+
+  it("accepts the Google provider route for the authorized Vercel origin without completing sign-in", async () => {
+    expect(apiKey).toBeTruthy();
+
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${encodeURIComponent(apiKey!)}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        // The intentionally absent Google credential produces a validation
+        // error before a user is signed in. It is enough to distinguish an
+        // enabled provider/domain path from OPERATION_NOT_ALLOWED.
+        body: JSON.stringify({
+          requestUri: "https://jananiti009.vercel.app",
+          postBody: "providerId=google.com",
+          returnSecureToken: true,
+        }),
+      }
+    );
+    const payload = (await response.json()) as {
+      error?: { message?: string; status?: string };
+    };
+    const errorText = `${payload.error?.status ?? ""} ${payload.error?.message ?? ""}`;
+
+    expect(response.status).toBe(400);
+    expect(errorText).toMatch(/invalid.*credential|invalid.*provider/i);
+    expect(errorText).not.toMatch(/operation_not_allowed|unauthorized_domain/i);
+  });
 });
