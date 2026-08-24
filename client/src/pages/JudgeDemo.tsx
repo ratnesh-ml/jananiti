@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, CircleGauge, FilePlus2, MapPinned, ShieldCheck, UsersRound } from "lucide-react";
+import { VERCEL_JUDGE_HOST } from "@/lib/judgeDemoFallback";
 
 const steps = [
   { icon: FilePlus2, title: "1. Report in under a minute", body: "Capture text, photo, short video, voice, or document evidence; choose automatic or manual locality; then review before submitting.", href: "/report", label: "Open reporter" },
@@ -10,6 +11,7 @@ const steps = [
 ];
 
 export default function JudgeDemo() {
+  const isVercelJudgeHost = typeof window !== "undefined" && window.location.hostname === VERCEL_JUDGE_HOST;
   return (
     <main className="min-h-screen bg-[#f6f8fb] px-4 py-8 text-[#102a43] sm:px-8">
       <section className="mx-auto max-w-4xl">
@@ -21,7 +23,7 @@ export default function JudgeDemo() {
             <span className="rounded-full bg-white/15 px-3 py-2">Evidence-led reporting</span>
             <span className="rounded-full bg-white/15 px-3 py-2">Community validation</span>
             <span className="rounded-full bg-white/15 px-3 py-2">Explainable DRFI</span>
-            <span className="rounded-full bg-white/15 px-3 py-2">Google-native roadmap</span>
+            <span className="rounded-full bg-white/15 px-3 py-2">Vercel judge build</span>
           </div>
         </div>
 
@@ -30,7 +32,7 @@ export default function JudgeDemo() {
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#15935d]" />
             <div>
               <h2 className="font-black">How to judge the prototype</h2>
-              <p className="mt-1 text-sm leading-6 text-[#55708a]">Use the sequence below. Public discovery pages can be viewed first; reporting and coordinator operations use the secure sign-in path. The app does not invent community activity or claim unconfigured Google services as live.</p>
+              <p className="mt-1 text-sm leading-6 text-[#55708a]">This Vercel route is a public, no-sign-in walkthrough of the submitted civic flow. It deliberately avoids the legacy server bootstrap while its Firebase-backed data migration is still gated. The app does not invent community activity or claim unconfigured Google services as live.</p>
             </div>
           </div>
         </div>
@@ -40,14 +42,14 @@ export default function JudgeDemo() {
             <article key={title} className="flex flex-col gap-4 rounded-[1.5rem] border border-[#dce7f1] bg-white p-5 shadow-sm sm:flex-row sm:items-center">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><Icon className="h-6 w-6" /></div>
               <div className="min-w-0 flex-1"><h2 className="font-black text-[#102a43]">{title}</h2><p className="mt-1 text-sm leading-6 text-[#58728a]">{body}</p></div>
-              <Link href={href} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#075eb7] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#064f9d] active:scale-[.98]">{label}<ArrowRight className="h-4 w-4" /></Link>
+              {isVercelJudgeHost ? <span className="inline-flex shrink-0 items-center justify-center rounded-xl border border-[#b8d9f4] bg-[#f5faff] px-4 py-3 text-center text-xs font-extrabold text-[#075eb7]">Implemented flow<br />documented in source</span> : <Link href={href} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#075eb7] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#064f9d] active:scale-[.98]">{label}<ArrowRight className="h-4 w-4" /></Link>}
             </article>
           ))}
         </div>
 
         <section className="mt-7 rounded-[1.6rem] border border-[#d3ede1] bg-[#f1fbf6] p-5">
-          <h2 className="font-black text-[#0d6040]">Responsible Google technology plan</h2>
-          <p className="mt-2 text-sm leading-6 text-[#356a55]">Firebase Authentication, Firestore, Cloud Storage, Cloud Run, FCM, Maps Platform, App Check, Cloud Logging, and Vertex AI are the target production stack. Vertex AI is limited to editable draft triage; deterministic DRFI and coordinator review remain authoritative.</p>
+          <h2 className="font-black text-[#0d6040]">Responsible Google technology status</h2>
+          <p className="mt-2 text-sm leading-6 text-[#356a55]">Firebase Google Sign-In and Firestore boundaries are prepared for the zero-cost stage. Civic data is not yet migrated to Firestore, and Maps, Vertex AI, Cloud Run, media storage, SMS, and device push remain deliberately disabled. Deterministic DRFI and coordinator review remain authoritative.</p>
         </section>
       </section>
     </main>
