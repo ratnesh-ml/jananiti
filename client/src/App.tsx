@@ -19,6 +19,7 @@ import Explore from "./pages/Explore";
 import ActionCenter from "./pages/ActionCenter";
 import SignIn from "./pages/SignIn";
 import Discussion from "./pages/Discussion";
+import Onboarding from "./pages/Onboarding";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -32,6 +33,7 @@ function Router() {
       <Route path={"/notifications"} component={ActionCenter} />
       <Route path={"/signin"} component={SignIn} />
       <Route path={"/discussion"} component={Discussion} />
+      <Route path={"/onboarding"} component={Onboarding} />
       <Route path={"/heatmap"} component={Heatmap} />
       <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />

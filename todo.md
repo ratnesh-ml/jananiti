@@ -92,3 +92,10 @@
 - [x] Extend the Google-first architecture plan with explicit adapter, development fallback, production cutover, and security boundaries for App Check, Analytics, Monitoring/Logging, and Secret Manager.
 - [ ] Add a locality selector/filter and visible area-cluster summary to the Heatmap development fallback, then connect the screen-level map service boundary to the documented Google Maps production cutover.
 - [ ] Introduce a screen-level map service contract that switches Heatmap between the existing development fallback and the future configured Google Maps implementation without changing page-level civic filters or selection behavior.
+- [x] Create an implementation blueprint mapping all supplied JanaNiti screen elements, interactions, visual states, and data dependencies to routes and reusable components without reusing the reference images as assets.
+- [x] Rebuild the mobile shell to match the supplied specification: branded top control row, locality control, search, notification/profile actions, context tabs, and the Home/Explore/Report/Activity/Profile dock.
+- [ ] Rebuild the “For You” local feed with evidence-first civic cards, community validation ring, true/not-true controls, comments, share, priority/status context, and real feed-query states.
+- [ ] Rebuild the issue-detail, report, review-and-confirm, locality-map, Action Center, profile, Explore, and onboarding interfaces to match supplied layouts and connect every visible action to real data or an explicit fallback.
+- [ ] Add self-authored unit and workflow test cases covering UI state derivation, civic comments, validation controls, reporting review, map filters/clusters, notifications, and critical authorization/error states.
+- [x] Implement a mobile-visible locality control in the shared shell that displays the current profile locality and opens a real locality preference/edit route.
+- [ ] Wire the Home feed True/Not true controls to the persistent confirm/dispute verification mutation and expose the unable-to-verify path without misrepresenting reactions as truth validation.
