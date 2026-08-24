@@ -19,6 +19,7 @@ export default defineConfig({
       "server/**/*.spec.ts",
       "client/src/lib/firebase/**/*.test.ts",
       "client/src/lib/judgeDemoFallback.test.ts",
+      "client/src/lib/browserLocalDemo.test.ts",
     ],
   },
 });

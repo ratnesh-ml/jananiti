@@ -151,3 +151,6 @@
 - [x] Remove Manus-auth and managed-preview references from all judge-facing routes, README links, and submission copy; keep only the verified Vercel link.
 - [x] Perform a final public-repository security audit for credential-like strings, environment files, internal setup notes, and secret-bearing artifacts before hackathon submission.
 - [x] Rewrite the public README and Vercel judge walkthrough around the verified Vercel-only static demo, its test evidence, and clearly bounded Firebase status.
+- [ ] Reproduce the user-reported Vercel public-view failure from a fresh session, repair its routing or client bootstrap, and verify the judge page visibly renders without relying on an authenticated dashboard session.
+- [ ] Replace the Vercel static guide with an explicitly labelled browser-local civic demo that supports issue creation, community validation, deterministic priority explanation, and coordinator status actions without authentication or external data persistence.
+- [ ] Test the Vercel-only interactive demo as a fresh public visitor and update public submission copy with its browser-local privacy and reset behavior.
