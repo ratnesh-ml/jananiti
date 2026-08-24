@@ -23,11 +23,12 @@
 - [x] Add a manual latitude/longitude fallback for location capture while the interactive map bootstrap remains unavailable.
 - [x] Add a manual latitude/longitude fallback for location capture while the interactive map bootstrap remains unavailable.
 - [ ] Implement and verify citizen receipt notifications and complete coordinator assignment/reassignment notification scenarios.
-- [ ] Add assignment controls to the coordinator workspace UI and verify the full assign-to-resolve workflow.
+- [x] Add assignment controls to the coordinator workspace UI and verify the full assign-to-resolve workflow.
+- [ ] Exercise and record the real administrator assign-to-update-to-resolve workflow, including citizen and coordinator notification side effects.
 - [ ] Add automated tests for civic item creation, notification triggers, profile/consent persistence, operations mutations, and attachment ownership/validation.
 - [ ] Implement and verify a real post-login account-setup onboarding step with profile completion and consent capture.
 - [x] Design an Aadhaar-aware future duplicate-prevention capability that never stores raw Aadhaar values and is gated behind legal, consent, security, and authorized-verification requirements.
-- [ ] Implement configurable evidence and demand inputs for DRFI, explainable priority scoring, and an administrator review workflow for every score.
+- [x] Implement configurable evidence and demand inputs for DRFI, explainable priority scoring, and an administrator review workflow for every score.
 - [ ] Expand the role-gated administrator workspace into a connected control centre for civic items, assignments, priorities, evidence inputs, notifications, and account/role administration.
 - [ ] Verify that the database, tRPC procedures, frontend, roles, notifications, and account setup operate as one connected platform.
 - [ ] Update the architecture document with a complete slide-deck coverage matrix that maps each module, input, DRFI factor, role, and workflow to a verified feature, configurable framework, or external-service adapter.

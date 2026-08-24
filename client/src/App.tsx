@@ -7,6 +7,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Operations from "./pages/Operations";
+import Assignments from "./pages/Assignments";
+import Priorities from "./pages/Priorities";
 import PublicActivity from "./pages/PublicActivity";
 import SubmitIssue from "./pages/SubmitIssue";
 import TrackIssue from "./pages/TrackIssue";
@@ -21,6 +23,8 @@ function Router() {
       <Route path={"/activity"} component={PublicActivity} />
       <Route path={"/me"} component={CitizenProfile} />
       <Route path={"/operations"} component={Operations} />
+      <Route path={"/assignments"} component={Assignments} />
+      <Route path={"/priorities"} component={Priorities} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

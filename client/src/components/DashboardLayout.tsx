@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { ClipboardCheck, LayoutDashboard, LogOut, Map, PanelLeft } from "lucide-react";
+import { ClipboardCheck, LayoutDashboard, LogOut, Map, PanelLeft, Route, SlidersHorizontal } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -30,6 +30,8 @@ import { Button } from "./ui/button";
 const menuItems = [
   { icon: LayoutDashboard, label: "Public portal", path: "/" },
   { icon: ClipboardCheck, label: "Operations", path: "/operations" },
+  { icon: Route, label: "Assignments", path: "/assignments" },
+  { icon: SlidersHorizontal, label: "Priorities", path: "/priorities" },
   { icon: Map, label: "Community activity", path: "/activity" },
 ];
 
