@@ -156,3 +156,6 @@
 - [ ] Test the Vercel-only interactive demo as a fresh public visitor and update public submission copy with its browser-local privacy and reset behavior.
 - [ ] Deploy a separate teammate-facing Jananiti full-app Vercel route while preserving the verified interactive judge demo and clearly isolating unavailable legacy backend/auth services.
 - [ ] Validate and share the new full-app Vercel URL only after its real accessible routes render without a loading-loop or unsupported-service claim.
+- [x] Redesign Jananiti’s mobile report and browser-local workspace using original white-canvas, compact-card, pill-control, cobalt-accent, and responsive-spacing principles informed by the uploaded reference without using its proprietary font, branding, or assets.
+- [x] Add compact, explicit image, audio, video, and document evidence actions with browser capability handling, clear selected-file state, and mobile-safe controls.
+- [ ] Verify the redesigned report composer at 390px and desktop widths, including focus, reduced-motion, and no-overflow behavior.

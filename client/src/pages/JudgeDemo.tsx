@@ -20,6 +20,7 @@ import {
   type DemoDrfiFactors,
   type DemoStatus,
 } from "@/lib/browserLocalDemo";
+import EvidencePicker from "@/components/EvidencePicker";
 
 type DemoIssue = {
   title: string;
@@ -27,6 +28,7 @@ type DemoIssue = {
   locality: string;
   visibility: "public" | "private";
   status: DemoStatus;
+  evidenceName?: string;
 };
 
 type VerificationChoice = "confirm" | "dispute" | "unable_to_verify" | null;
@@ -47,6 +49,7 @@ export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "
   const [draft, setDraft] = useState<{ title: string; category: string; locality: string; visibility: "public" | "private" }>({ title: "", category: categoryOptions[0], locality: "", visibility: "public" });
   const [issue, setIssue] = useState<DemoIssue | null>(null);
   const [choice, setChoice] = useState<VerificationChoice>(null);
+  const [evidence, setEvidence] = useState<File | null>(null);
   const [factors, setFactors] = useState<DemoDrfiFactors>(defaultDemoFactors);
   const priority = useMemo(() => calculateDemoDrfi(factors), [factors]);
   const canCreate = draft.title.trim().length >= 8 && draft.locality.trim().length >= 2;
@@ -56,6 +59,7 @@ export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "
     setDraft({ title: "", category: categoryOptions[0], locality: "", visibility: "public" });
     setIssue(null);
     setChoice(null);
+    setEvidence(null);
     setFactors(defaultDemoFactors);
   };
 
@@ -81,7 +85,7 @@ export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "
           </div>
         </div>
 
-        <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_1.15fr]">
+        <div className="mt-7 grid gap-5 lg:grid-cols-[1fr_1.15fr]">
           <section className="rounded-[1.6rem] border border-[#dce7f1] bg-white p-5 shadow-sm">
             <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><FilePlus2 className="h-5 w-5" /></span><div><h2 className="font-black">1. Create a civic report</h2><p className="text-xs text-[#58728a]">The record exists only in this browser tab.</p></div></div>
             <div className="mt-5 grid gap-3">
@@ -104,7 +108,8 @@ export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "
               <label className="grid gap-1 text-xs font-bold text-[#3f5f7d]">Locality or ward
                 <input value={draft.locality} onChange={(event) => setDraft({ ...draft, locality: event.target.value })} placeholder="e.g., Ward 12" className="rounded-xl border border-[#cdddea] bg-white px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2" />
               </label>
-              <button disabled={!canCreate} onClick={() => { setIssue({ ...draft, title: draft.title.trim(), locality: draft.locality.trim(), status: "submitted" }); setChoice(null); }} className="mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#075eb7] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#064f9d] disabled:cursor-not-allowed disabled:opacity-40"><Send className="h-4 w-4" />Create local demo record</button>
+              <EvidencePicker file={evidence} onChoose={setEvidence} onRemove={() => setEvidence(null)} maxSizeLabel="Local only" />
+              <button disabled={!canCreate} onClick={() => { setIssue({ ...draft, title: draft.title.trim(), locality: draft.locality.trim(), status: "submitted", evidenceName: evidence?.name }); setChoice(null); }} className="mt-1 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0064e0] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#0457cb] active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"><Send className="h-4 w-4" />Create local demo record</button>
             </div>
           </section>
 
@@ -115,6 +120,7 @@ export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "
                 <div className="flex flex-wrap items-center justify-between gap-2"><span className="rounded-full bg-[#e5f2ff] px-2.5 py-1 text-xs font-extrabold text-[#075eb7]">{issue.category}</span><span className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-[#496882]">{issue.visibility === "public" ? "Public" : "Private"} · {issue.locality}</span></div>
                 <h3 className="mt-3 font-black text-[#163956]">{issue.title}</h3>
                 <p className="mt-1 text-sm text-[#55708a]">Current state: <strong>{demoStatusLabels[issue.status]}</strong></p>
+                {issue.evidenceName && <p className="mt-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-[#496882]">Evidence selected locally: {issue.evidenceName}</p>}
               </div>
               <div className="mt-4"><p className="text-xs font-extrabold uppercase tracking-wide text-[#58728a]">Your one browser-local verification</p><div className="mt-2 grid gap-2 sm:grid-cols-3">
                 {(["confirm", "dispute", "unable_to_verify"] as const).map((response) => <button key={response} disabled={choice !== null} onClick={() => setChoice(response)} className={`rounded-xl border px-3 py-2.5 text-xs font-extrabold transition ${choice === response ? "border-[#075eb7] bg-[#e9f3ff] text-[#075eb7]" : "border-[#cdddea] bg-white text-[#486780] hover:border-[#75aee5]"} disabled:cursor-not-allowed disabled:opacity-70`}>{response === "confirm" ? "Confirm" : response === "dispute" ? "Dispute" : "Unable to verify"}</button>)}
