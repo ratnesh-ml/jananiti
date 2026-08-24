@@ -1,0 +1,109 @@
+rules_version = '2';
+
+// Zero-cost Firebase stage: direct browser access is limited to a small,
+// client-safe document model. Jananiti's existing backend remains authoritative
+// until its reviewed Firebase transition is complete. No rule grants public
+// access to identity, private reports, attachments, audit data, DRFI inputs, or
+// coordinator operations.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      // Custom claims can only be issued by a trusted server-side administration
+      // process. No client-controlled Firestore field is used for authorization.
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    function issueExists(issueId) {
+      return exists(/databases/$(database)/documents/civicItems/$(issueId));
+    }
+
+    function canReadIssue(issueId) {
+      return issueExists(issueId) && (
+        get(/databases/$(database)/documents/civicItems/$(issueId)).data.visibility == "public" ||
+        get(/databases/$(database)/documents/civicItems/$(issueId)).data.reporterUid == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    match /citizens/{userId} {
+      allow create: if isSelf(userId)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.role == "citizen";
+      allow read: if isSelf(userId) || isAdmin();
+      allow update: if isSelf(userId)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["displayName", "locality", "ward", "district", "updatedAt"]);
+      allow delete: if false;
+    }
+
+    match /civicItems/{issueId} {
+      allow read: if resource.data.visibility == "public"
+        || (signedIn() && resource.data.reporterUid == request.auth.uid)
+        || isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.visibility in ["public", "private"]
+        && request.resource.data.status == "submitted"
+        && request.resource.data.priority == "standard"
+        && request.resource.data.keys().hasOnly([
+          "reporterUid", "category", "title", "description", "locationLabel",
+          "locality", "latitude", "longitude", "visibility", "status", "priority",
+          "createdAt", "updatedAt"
+        ]);
+      // The reporter may withdraw a report only before assignment. Coordinator
+      // workflow, status, priority, and DRFI fields remain server-admin actions.
+      allow update: if signedIn()
+        && resource.data.reporterUid == request.auth.uid
+        && resource.data.status == "submitted"
+        && request.resource.data.reporterUid == resource.data.reporterUid
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.priority == resource.data.priority
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["title", "description", "locationLabel", "locality", "latitude", "longitude", "visibility", "updatedAt"]);
+      allow delete: if false;
+
+      match /comments/{commentId} {
+        allow read: if signedIn() && canReadIssue(issueId);
+        allow create: if signedIn() && canReadIssue(issueId)
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.keys().hasOnly(["authorUid", "body", "parentCommentId", "createdAt"]);
+        allow update, delete: if false;
+      }
+
+      // Document ID must equal the authenticated user's UID, giving one response
+      // per person without publicly exposing their identity.
+      match /verifications/{userId} {
+        allow read: if signedIn() && canReadIssue(issueId);
+        allow create, update: if isSelf(userId) && canReadIssue(issueId)
+          && request.resource.data.userUid == request.auth.uid
+          && request.resource.data.response in ["confirm", "dispute", "unable_to_verify"]
+          && request.resource.data.keys().hasOnly(["userUid", "response", "updatedAt"]);
+        allow delete: if false;
+      }
+    }
+
+    match /citizens/{userId}/notifications/{notificationId} {
+      allow read: if isSelf(userId) || isAdmin();
+      allow update: if isSelf(userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["readAt"]);
+      allow create, delete: if false;
+    }
+
+    // Attachments, DRFI evidence, operations, assignments, moderation, audit
+    // history, and all other paths are denied until a trusted server-side
+    // migration can enforce their privacy and role requirements.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

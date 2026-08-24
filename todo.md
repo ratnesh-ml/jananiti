@@ -122,16 +122,23 @@
 - [x] Verify and document that the deterministic DRFI formula works independently of AI, including inputs, thresholds, explainability, tests, and human-review boundaries.
 - [x] Design Vertex AI usage as optional, constrained draft triage and summarization with structured output, no autonomous priority decisions, and no replacement of DRFI or human evidence review.
 - [x] Produce a complete beginner-friendly Google credential inventory and Console setup guide for Firebase Authentication, Firestore, Cloud Storage, Cloud Run/Functions, FCM, Maps, Vertex AI, App Check, Secret Manager, Analytics, Logging, and Vercel deployment.
-- [ ] Begin Google-native adapter implementation only after the user supplies the required configuration through secure project secrets rather than chat.
+- [x] Begin Google-native adapter implementation only after the user supplies the required configuration through secure project secrets rather than chat.
 - [ ] Remove internal migration and credential-planning documents from the GitHub repository while retaining only judge-appropriate hackathon artifacts.
 - [ ] Rewrite README as a concise Code for Communities judge submission: problem, solution, differentiated features, Google technology roadmap, architecture, DRFI, privacy, demo route, local run, and test command.
 - [ ] Add judge-ready in-app demo copy and a guided walkthrough route that highlights reporting, community validation, DRFI priority, coordinator operations, and the honest Google migration path.
 - [ ] Provide the full beginner Google/Firebase/Cloud setup instructions directly in chat rather than placing credential instructions in the GitHub repository.
 - [x] Research and document current official free quotas, billing prerequisites, and likely cost exposure for the Jananiti Google/Firebase stack.
 - [x] Produce a cost-minimized hackathon configuration that keeps only essential free-tier services active, defers paid services, and adds billing-budget safeguards before any production credential is requested.
-- [ ] Implement only the free-stage Google boundary: Firebase Google Sign-In and Firestore planning, with DRFI and current privacy-safe map fallback retained.
-- [ ] Keep Google Maps, Places, Vertex AI, Cloud Run, Cloud Functions, Cloud Storage media migration, phone/SMS authentication, and FCM web push disabled until the user opts into billing.
-- [ ] Request only the six Firebase Web App configuration values plus confirmation that Google Sign-In and Firestore are enabled, using secure project secrets.
+- [x] Implement only the free-stage Google boundary: Firebase Google Sign-In and Firestore planning, with DRFI and current privacy-safe map fallback retained.
+- [x] Keep Google Maps, Places, Vertex AI, Cloud Run, Cloud Functions, Cloud Storage media migration, phone/SMS authentication, and FCM web push disabled until the user opts into billing.
+- [x] Request only the six Firebase Web App configuration values plus confirmation that Google Sign-In and Firestore are enabled, using secure project secrets.
 - [x] Receive the Firebase Web App configuration through secure project secrets and validate the browser key with a non-mutating Firebase Authentication request.
 - [ ] Confirm that Firebase Google Sign-In is enabled and Firestore has been created in Production mode before switching any live user flow away from the current authentication and database stack.
 - [ ] Design and implement the authenticated Firebase-to-Jananiti account transition and Firestore civic-data migration without disrupting existing citizen, coordinator, and judge-demo flows.
+- [ ] Replace Firebase Firestore test-mode rules with reviewed, role-aware production rules before storing or serving any Jananiti civic data from Firestore.
+- [ ] Verify Firestore test-mode expiry, unauthenticated denial, owner-only private report access, public-report visibility, and coordinator authorization against the proposed rule set.
+- [ ] Add the active Jananiti preview and deployment domains to Firebase Authentication authorized domains before testing Google popup sign-in.
+- [x] Add only the approved Vercel deployment domain, jananiti009.vercel.app, to Firebase Authentication authorized domains; keep the Manus preview domain excluded.
+- [ ] Configure and verify the Firebase session bridge runtime variables and deployment behavior on the authorized Vercel domain before attempting public Google Sign-In.
+- [ ] Run a real browser E2E check of Firebase Google Sign-In, Jananiti session creation, protected-route access, and sign-out behavior.
+- [x] Synchronize Jananiti logout with Firebase client sign-out to prevent a stale Firebase browser session.

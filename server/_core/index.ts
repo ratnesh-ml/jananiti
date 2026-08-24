@@ -10,6 +10,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { registerMapsScriptProxy } from "../mapsScriptProxy";
 import { registerCivicAttachmentRoutes } from "../civicAttachments";
+import { registerFirebaseSessionRoutes } from "../firebaseSession";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -40,6 +41,7 @@ async function startServer() {
   registerCivicAttachmentRoutes(app);
   registerMapsScriptProxy(app);
   registerOAuthRoutes(app);
+  registerFirebaseSessionRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",

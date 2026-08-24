@@ -2,6 +2,7 @@ import { startLogin } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
+import { signOutFromFirebaseIfPresent } from "@/lib/firebase/auth";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -39,6 +40,14 @@ export function useAuth(options?: UseAuthOptions) {
       }
       throw error;
     } finally {
+      // Firebase's browser session is separate from the Jananiti cookie. Clear
+      // it too so a user who explicitly signs out is not silently retained by
+      // the Google popup on their next visit.
+      try {
+        await signOutFromFirebaseIfPresent();
+      } catch (error) {
+        console.warn("[FirebaseAuth] Browser sign-out could not be completed", error);
+      }
       // Clear the Preview auto-login token mirrored into sessionStorage, so
       // header-based sessions (Safari ITP / WebView) are logged out too. The
       // backend cookie is cleared by the logout mutation.
