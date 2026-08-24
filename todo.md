@@ -144,7 +144,8 @@
 - [x] Synchronize Jananiti logout with Firebase client sign-out to prevent a stale Firebase browser session.
 - [x] Audit the GitHub repository, judge walkthrough, live-demo URLs, test evidence, and Google-service claims as one directly submittable Code for Communities package.
 - [x] Resolve or clearly label Vercel and Firestore limitations so judges are never directed to a broken or overstated demo.
-- [ ] Produce a concise evidence-based demo-video storyboard only after the submitted build and walkthrough are verified.
+- [x] Produce a concise evidence-based demo-video storyboard only after the submitted build and walkthrough are verified.
+- [x] Create a silent Vercel judge-walkthrough demo video from verified public-page captures; defer the optional AI-generated motion clip until the free video quota resets.
 - [x] Use only https://jananiti009.vercel.app as the judge-facing live link after its 500 runtime failure is repaired; remove the managed-preview URL from submission-facing materials.
 - [x] Route the Vercel deployment through a static, no-sign-in judge walkthrough fallback so public evaluation does not invoke the crashing legacy serverless API.
 - [x] Remove Manus-auth and managed-preview references from all judge-facing routes, README links, and submission copy; keep only the verified Vercel link.
