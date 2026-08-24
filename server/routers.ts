@@ -42,6 +42,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { COOKIE_NAME } from "../shared/const";
 import { canTransitionCivicStatus, statusNotificationTitle } from "./civicLifecycle";
+import { shouldDispatchLocalVerification } from "./civicWorkflow";
 
 const publicIdInput = z.object({ publicId: z.string().regex(/^JN-[A-Z0-9_-]{6,24}$/) });
 const createItemInput = z.object({
@@ -116,18 +117,11 @@ export const appRouter = router({
     create: protectedProcedure.input(createItemInput).mutation(async ({ ctx, input }) => {
       const profile = await getCitizenProfile(ctx.user.id);
       const created = await createCivicItem({ citizenId: ctx.user.id, locality: profile?.locality ?? null, ...input });
-      await createCivicNotification({
-        recipientId: ctx.user.id,
-        civicItemId: created.civicItemId,
-        type: "receipt",
-        title: "Your civic request has been received",
-        message: `${created.publicId}: coordinators can now review the record and post updates.` ,
-      });
       void notifyOwner({
         title: "New Jananiti report received",
         content: `${created.publicId}: ${input.title}`,
       });
-      if (input.visibility === "public" && profile?.locality) await dispatchLocalVerificationAlert({ civicItemId: created.civicItemId, locality: profile.locality, reporterId: ctx.user.id });
+      if (shouldDispatchLocalVerification(input.visibility, profile?.locality)) await dispatchLocalVerificationAlert({ civicItemId: created.civicItemId, locality: profile!.locality!, reporterId: ctx.user.id });
       return created;
     }),
   }),

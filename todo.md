@@ -99,3 +99,13 @@
 - [ ] Add self-authored unit and workflow test cases covering UI state derivation, civic comments, validation controls, reporting review, map filters/clusters, notifications, and critical authorization/error states.
 - [x] Implement a mobile-visible locality control in the shared shell that displays the current profile locality and opens a real locality preference/edit route.
 - [ ] Wire the Home feed True/Not true controls to the persistent confirm/dispute verification mutation and expose the unable-to-verify path without misrepresenting reactions as truth validation.
+- [x] Make the secure sign-in page the first entry route, then redirect authenticated citizens into the main civic experience without replacing the current session system.
+- [ ] Repair mobile-width button, tab, header, and form-control overflow across the shared shell, feed, report, map, Action Center, profile, and admin surfaces.
+- [ ] Verify with targeted tests and authenticated browser checks that a citizen can create a public or private issue, upload permitted evidence, and receive a receipt notification.
+- [ ] Verify with targeted tests and authenticated browser checks that public civic records appear in the community feed, support discussion and verification, and appear in privacy-safe locality discovery and heat-map views when coordinates are shared.
+- [ ] Verify with targeted tests and authenticated browser checks that an administrator can see civic items, assignments, priorities, and the heat-map, then perform authorized workflow actions without exposing private reports.
+- [ ] Implement the three supplied authenticated mobile screen compositions as the immediate visual baseline: For You evidence feed, civic record detail, and staged report interface.
+- [x] Ensure the post-sign-in route enters the supplied For You feed rather than a public marketing or onboarding surface.
+- [ ] Make the supplied feed-card actions, detail-page validation controls, comment route, media evidence, and report-stage controls responsive and functionally honest on 390px mobile screens.
+- [ ] Perform autonomous, non-destructive functional checks with the existing authenticated environment and document which live flows are verifiable without inventing citizen records or community activity.
+- [x] Add functional contract coverage for public/private issue visibility, single receipt creation, locality alert eligibility, verification response mapping, map inclusion, and administrator access gating.

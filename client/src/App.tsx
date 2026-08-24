@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CivicMobileNav } from "@/components/CivicHeader";
+import { useAuth } from "@/_core/hooks/useAuth";
 import CitizenProfile from "@/pages/CitizenProfile";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -22,7 +23,9 @@ import Discussion from "./pages/Discussion";
 import Onboarding from "./pages/Onboarding";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
+  const { user, loading } = useAuth();
+  if (loading) return <div className="grid min-h-screen place-items-center bg-[#f6f8fb] px-6 text-center"><div><div className="mx-auto h-10 w-10 animate-pulse rounded-2xl bg-[#0e5bb7]" /><p className="mt-4 text-sm font-bold text-[#54708d]">Preparing your civic space…</p></div></div>;
+  if (!user) return <SignIn />;
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -54,6 +57,7 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  const { user } = useAuth();
   return (
     <ErrorBoundary>
       <ThemeProvider
@@ -63,7 +67,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <div className="pb-20 sm:pb-0"><Router /></div>
-          <CivicMobileNav />
+          {user && <CivicMobileNav />}
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

@@ -1,31 +1,8 @@
 export type CivicSignal = { confirm: number; dispute: number; up?: number; down?: number };
 export type CivicPresentationRecord = { publicId: string; category: string; priority: string; locality?: string | null; latitude?: number; longitude?: number; signals: CivicSignal };
 
-export function validationPercent(confirm: number, dispute: number) {
-  const total = confirm + dispute;
-  return total > 0 ? Math.round(confirm / total * 100) : 0;
-}
-
-export function sortByCivicEngagement<T extends CivicPresentationRecord>(records: T[]) {
-  return [...records].sort((a, b) => {
-    const aScore = a.signals.confirm + (a.signals.up ?? 0) - (a.signals.down ?? 0);
-    const bScore = b.signals.confirm + (b.signals.up ?? 0) - (b.signals.down ?? 0);
-    return bScore - aScore;
-  });
-}
-
-export function filterMapRecords<T extends CivicPresentationRecord>(records: T[], filters: { category?: string; priority?: string; locality?: string }) {
-  return records.filter(record => (filters.category === undefined || filters.category === "All" || record.category === filters.category) && (filters.priority === undefined || filters.priority === "All" || record.priority === filters.priority) && (filters.locality === undefined || filters.locality === "All" || record.locality === filters.locality));
-}
-
-export function clusterMapRecords<T extends CivicPresentationRecord>(records: T[]) {
-  return Object.values(records.reduce<Record<string, { key: string; locality: string; count: number; urgent: number }>>((clusters, record) => {
-    if (!Number.isFinite(record.latitude) || !Number.isFinite(record.longitude)) return clusters;
-    const locality = record.locality ?? "Unlabelled area";
-    const key = `${locality}:${Number(record.latitude).toFixed(2)}:${Number(record.longitude).toFixed(2)}`;
-    clusters[key] ??= { key, locality, count: 0, urgent: 0 };
-    clusters[key].count += 1;
-    clusters[key].urgent += record.priority === "urgent" ? 1 : 0;
-    return clusters;
-  }, {})).sort((a, b) => b.count - a.count);
-}
+export function validationPercent(confirm: number, dispute: number) { const total = confirm + dispute; return total > 0 ? Math.round(confirm / total * 100) : 0; }
+export function truthActionToVerification(action: "true" | "not_true" | "unable_to_verify") { if (action === "true") return "confirm" as const; if (action === "not_true") return "dispute" as const; return "unable_to_verify" as const; }
+export function sortByCivicEngagement<T extends CivicPresentationRecord>(records: T[]) { return [...records].sort((a, b) => (b.signals.confirm + (b.signals.up ?? 0) - (b.signals.down ?? 0)) - (a.signals.confirm + (a.signals.up ?? 0) - (a.signals.down ?? 0))); }
+export function filterMapRecords<T extends CivicPresentationRecord>(records: T[], filters: { category?: string; priority?: string; locality?: string }) { return records.filter(record => (filters.category === undefined || filters.category === "All" || record.category === filters.category) && (filters.priority === undefined || filters.priority === "All" || record.priority === filters.priority) && (filters.locality === undefined || filters.locality === "All" || record.locality === filters.locality)); }
+export function clusterMapRecords<T extends CivicPresentationRecord>(records: T[]) { return Object.values(records.reduce<Record<string, { key: string; locality: string; count: number; urgent: number }>>((clusters, record) => { if (!Number.isFinite(record.latitude) || !Number.isFinite(record.longitude)) return clusters; const locality = record.locality ?? "Unlabelled area"; const key = `${locality}:${Number(record.latitude).toFixed(2)}:${Number(record.longitude).toFixed(2)}`; clusters[key] ??= { key, locality, count: 0, urgent: 0 }; clusters[key].count += 1; clusters[key].urgent += record.priority === "urgent" ? 1 : 0; return clusters; }, {})).sort((a, b) => b.count - a.count); }

@@ -197,4 +197,10 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
+
+  @media (max-width: 420px) {
+    .sticky .min-w-max.gap-7 {
+      gap: 0.75rem;
+    }
+  }
 }
