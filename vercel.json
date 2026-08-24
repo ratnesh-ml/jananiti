@@ -3,13 +3,17 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist/public",
   "functions": {
-    "api/[...path].ts": {
+    "api/index.ts": {
       "includeFiles": "dist/public/**"
     }
   },
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/api/index"
     }
   ]
