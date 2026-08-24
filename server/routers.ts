@@ -77,7 +77,7 @@ export const appRouter = router({
     }),
   }),
   profile: router({
-    mine: protectedProcedure.query(({ ctx }) => getCitizenProfile(ctx.user.id)),
+    mine: protectedProcedure.query(async ({ ctx }) => (await getCitizenProfile(ctx.user.id)) ?? null),
     save: protectedProcedure.input(z.object({
       locality: z.string().max(160).nullable().optional(),
       ward: z.string().max(120).nullable().optional(),
