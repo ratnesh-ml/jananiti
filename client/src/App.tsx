@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { CivicMobileNav } from "@/components/CivicHeader";
 import CitizenProfile from "@/pages/CitizenProfile";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -26,6 +27,7 @@ function Router() {
       <Route path={"/heatmap"} component={Heatmap} />
       <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />
+      <Route path={"/profile"} component={CitizenProfile} />
       <Route path={"/operations"} component={Operations} />
       <Route path={"/assignments"} component={Assignments} />
       <Route path={"/priorities"} component={Priorities} />
@@ -50,7 +52,8 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <div className="pb-20 sm:pb-0"><Router /></div>
+          <CivicMobileNav />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

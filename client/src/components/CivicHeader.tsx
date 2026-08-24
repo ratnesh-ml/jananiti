@@ -1,7 +1,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
 import { Button } from "@/components/ui/button";
-import { Bell, ChevronRight, Menu, ShieldCheck } from "lucide-react";
+import { Bell, ChevronRight, Compass, House, Map, Menu, Plus, ShieldCheck, UserRound } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 
@@ -89,6 +89,19 @@ export default function CivicHeader() {
       )}
     </header>
   );
+}
+
+const mobileDestinations = [
+  { label: "Home", href: "/", icon: House },
+  { label: "Local", href: "/activity", icon: Compass },
+  { label: "Report", href: "/report", icon: Plus },
+  { label: "Map", href: "/heatmap", icon: Map },
+  { label: "Me", href: "/me", icon: UserRound },
+];
+
+export function CivicMobileNav() {
+  const [location] = useLocation();
+  return <nav aria-label="Mobile civic navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-[#dce8f3] bg-white/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_28px_rgba(24,64,102,.1)] backdrop-blur-xl sm:hidden"><div className="mx-auto flex max-w-md items-end justify-between">{mobileDestinations.map(item => { const Icon = item.icon; const active = location === item.href; return <Link key={item.href} href={item.href} className={`flex min-w-[54px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[10px] font-extrabold ${active ? "text-[#086ccc]" : "text-[#7088a1]"}`}>{item.href === "/report" ? <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#086ccc] text-white shadow-[0_8px_18px_rgba(8,108,204,.26)]"><Icon className="h-5 w-5" /></span> : <Icon className={`h-5 w-5 ${active ? "fill-[#e8f3ff]" : ""}`} />}<span>{item.label}</span></Link>; })}</div></nav>;
 }
 
 export function CivicFooter() {

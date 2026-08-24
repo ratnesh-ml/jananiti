@@ -71,3 +71,9 @@
 - [ ] Ensure all redesigned social-feed and local-discovery surfaces use original Jananiti copy, assets, color system, and component construction while retaining only general interaction conventions.
 - [ ] Add a real saved-draft workflow or explicit draft-state experience to the civic report composer and verify it in preview.
 - [ ] Add media-specific previews or clear fallbacks for image, audio, video, and document evidence, plus honest upload and processing states in the reporter and feed.
+- [x] Analyze the supplied government-portal gap, ward-problem, and solution PDFs; map each validated gap to a Jananiti feature, workflow, or documented future integration.
+- [x] Rebuild the Jananiti landing page around the supplied mobile reference: restrained top bar, generous compositional whitespace, centered governance hero, compact primary actions, and original civic visual assets.
+- [x] Reconcile the landing, entry, local feed, reporting, and operations journeys into one coherent mobile-first experience informed by the documented civic gaps and ward priorities.
+- [ ] Align the local feed, entry/sign-in, profile, and operations workspace with the reference-led mobile-first landing and reporting design language.
+- [ ] Validate the landing, local feed, report, profile/entry, and operations journeys together at desktop and mobile sizes before considering the cross-journey redesign complete.
+- [x] Add and validate a profile-route alias so links to the citizen personal space do not fall into a not-found page.
