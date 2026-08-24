@@ -185,7 +185,7 @@ export const civicAttachments = mysqlTable(
     storageKey: varchar("storageKey", { length: 512 }).notNull(),
     originalName: varchar("originalName", { length: 255 }).notNull(),
     mimeType: varchar("mimeType", { length: 120 }).notNull(),
-    kind: mysqlEnum("kind", ["image", "audio", "document"]).notNull(),
+    kind: mysqlEnum("kind", ["image", "audio", "video", "document"]).notNull(),
     sizeBytes: int("sizeBytes").notNull(),
     analysisStatus: mysqlEnum("analysisStatus", ["not_requested", "pending", "completed", "failed"]).notNull().default("not_requested"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),

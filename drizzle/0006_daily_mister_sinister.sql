@@ -1,0 +1,1 @@
+ALTER TABLE `civic_attachments` MODIFY COLUMN `kind` enum('image','audio','video','document') NOT NULL;

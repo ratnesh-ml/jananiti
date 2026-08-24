@@ -302,7 +302,7 @@ export async function saveCivicAttachment(input: {
   storageKey: string;
   originalName: string;
   mimeType: string;
-  kind: "image" | "audio" | "document";
+  kind: "image" | "audio" | "video" | "document";
   sizeBytes: number;
 }) {
   const db = await getDb();

@@ -55,3 +55,19 @@
 - [x] Implement earning rules for every declared civic badge or remove unsupported badge types from the product model.
 - [x] Add an in-app badge explainer with transparent award criteria and anti-spam/review conditions.
 - [ ] Verify the complete locality-eligible confirm/dispute/unable-to-verify flow in preview and add mutation-level test coverage for the one-response-per-record rule.
+- [x] Review the supplied Jananiti frontend’s unauthenticated entry patterns and document which interaction ideas can be recreated with original code and visual assets.
+- [x] Define the Firebase configuration, Google OAuth consent, authorized-domain, redirect, account-linking, and data-retention requirements for Jananiti.
+- [x] Decide and document whether Firebase Authentication, Firestore, Cloud Storage, and/or Cloud Functions augment or replace the current OAuth, tRPC, MySQL, and S3 architecture.
+- [ ] Implement Firebase-backed Google sign-in only after the required Firebase project configuration and credentials are securely provided.
+- [ ] Implement secure Firebase data and storage integration only after the data-migration, access-control, privacy, and backup boundaries are approved.
+- [ ] Redesign the unauthenticated Jananiti entry and sign-in experience with original civic assets and a layout informed by the supplied live frontend.
+- [ ] Validate Google sign-in, user-account linking, protected data access, sign-out, error states, and responsive entry flows.
+- [ ] Rework Jananiti’s public and signed-in information architecture into a cohesive, original social civic product with mobile-first feed, discover, create, activity, and profile entry points.
+- [ ] Redesign local-feed cards, composer affordances, interaction controls, story-style activity summaries, comments/progress context, and visual hierarchy for a more natural social experience.
+- [x] Simplify civic report creation into progressive steps with quick category selection, concise prompts, and a clear saved-draft/submission state.
+- [x] Support attachment selection for text, image, audio, and video with honest processing-status states and media-specific previews or fallbacks.
+- [x] Add explicit automatic location permission/capture and manual location/address/coordinate paths, with an understandable privacy choice and graceful map fallback.
+- [ ] Verify desktop and mobile reporting, feed browsing, media selection, and location-capture journeys through the preview.
+- [ ] Ensure all redesigned social-feed and local-discovery surfaces use original Jananiti copy, assets, color system, and component construction while retaining only general interaction conventions.
+- [ ] Add a real saved-draft workflow or explicit draft-state experience to the civic report composer and verify it in preview.
+- [ ] Add media-specific previews or clear fallbacks for image, audio, video, and document evidence, plus honest upload and processing states in the reporter and feed.

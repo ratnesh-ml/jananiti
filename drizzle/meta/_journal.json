@@ -43,6 +43,13 @@
       "when": 1787562027460,
       "tag": "0005_windy_spacker_dave",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1787569802790,
+      "tag": "0006_daily_mister_sinister",
+      "breakpoints": true
     }
   ]
 }

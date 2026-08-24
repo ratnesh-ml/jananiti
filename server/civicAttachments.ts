@@ -8,9 +8,10 @@ import { storagePut } from "./storage";
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const allowedDocumentTypes = new Set(["application/pdf", "text/plain"]);
 
-function classifyMimeType(mimeType: string): "image" | "audio" | "document" | null {
+function classifyMimeType(mimeType: string): "image" | "audio" | "video" | "document" | null {
   if (mimeType.startsWith("image/")) return "image";
   if (mimeType.startsWith("audio/")) return "audio";
+  if (mimeType.startsWith("video/")) return "video";
   if (allowedDocumentTypes.has(mimeType)) return "document";
   return null;
 }
@@ -46,7 +47,7 @@ export function registerCivicAttachmentRoutes(app: Express) {
       const mimeType = (req.header("content-type") ?? "").split(";")[0].trim().toLowerCase();
       const kind = classifyMimeType(mimeType);
       if (!kind) {
-        res.status(415).json({ message: "Upload an image, audio recording, PDF, or text document." });
+        res.status(415).json({ message: "Upload an image, short video, audio recording, PDF, or text document." });
         return;
       }
       if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
