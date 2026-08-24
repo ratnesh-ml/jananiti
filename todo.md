@@ -109,3 +109,6 @@
 - [ ] Make the supplied feed-card actions, detail-page validation controls, comment route, media evidence, and report-stage controls responsive and functionally honest on 390px mobile screens.
 - [ ] Perform autonomous, non-destructive functional checks with the existing authenticated environment and document which live flows are verifiable without inventing citizen records or community activity.
 - [x] Add functional contract coverage for public/private issue visibility, single receipt creation, locality alert eligibility, verification response mapping, map inclusion, and administrator access gating.
+- [x] Change the unauthenticated entry sequence to show the Jananiti intro/onboarding screen first, then secure sign-in, before allowing the authenticated civic site.
+- [ ] Finish the supplied Explore, Profile, and Locality Map mobile screen compositions using original components, real aggregates, and explicit no-data fallbacks.
+- [x] After UI completion, prepare a beginner-friendly credential guide covering only the required Firebase, Google Maps, Vertex AI, and deployment configuration values, including how to obtain each one safely.
