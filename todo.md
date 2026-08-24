@@ -77,3 +77,16 @@
 - [ ] Align the local feed, entry/sign-in, profile, and operations workspace with the reference-led mobile-first landing and reporting design language.
 - [ ] Validate the landing, local feed, report, profile/entry, and operations journeys together at desktop and mobile sizes before considering the cross-journey redesign complete.
 - [x] Add and validate a profile-route alias so links to the citizen personal space do not fall into a not-found page.
+- [x] Complete the pasted 23-phase specification review and maintain a traceable screen-and-workflow coverage matrix for all ten visual references.
+- [x] Establish a Google-first adapter architecture for Firebase Authentication, Firestore, Storage, Cloud Functions, FCM, Maps, Vertex AI, App Check, Analytics, Monitoring, and Secret Manager, with clearly labeled development fallbacks until credentials are supplied last.
+- [x] Assess and document the migration boundary from the current React/tRPC/MySQL implementation to the requested Angular/Firebase/Google Cloud target without destroying working civic records or pretending an unconfigured Google service is live.
+- [ ] Implement Screen 1 social-feed actions: real true/not-true switching, comments/replies, save, share, misinformation reporting, pagination, and media playback through safe service interfaces.
+- [ ] Implement Screen 2 issue-detail media carousel, independent-report count, affected-area context, complete status timeline, resolution verification, and comments.
+- [ ] Implement Screen 3 and Screen 4 as a progressive photo/video/voice/text reporter with browser capability handling, upload state, location correction, reviewable AI suggestion, and citizen confirmation/edit controls.
+- [ ] Implement Screen 5 mock-map development fallback and production Google Maps adapter boundaries for markers, clusters, filters, locality selection, and issue selection.
+- [ ] Implement Screen 6 action center, Screen 7 profile, Screen 8 explore/search, Screen 9 first-time onboarding, and Screen 10 Google-focused authentication with usable development modes.
+- [ ] Expand administrator roles and operations to support super-admin, department-admin, officer, and moderator workflows with backend-enforced authorization, priority-first queues, evidence review, and moderation actions.
+- [ ] Add media preview, upload progress, retry/delete, file validation, offline/failure states, security-policy artifacts, and test coverage for each citizen-facing workflow.
+- [ ] Produce the final Google/Firebase credential checklist only after application and development-fallback surfaces are complete and tested.
+- [x] Create and save a traceable ten-screen coverage matrix mapping each reference screen to current routes, supporting files, working interactions, and missing workflows.
+- [x] Extend the Google-first architecture plan with explicit adapter, development fallback, production cutover, and security boundaries for App Check, Analytics, Monitoring/Logging, and Secret Manager.

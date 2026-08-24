@@ -19,6 +19,7 @@ import {
   getPublicUpdates,
   listCitizenCivicItems,
   listCitizenBadges,
+  listCivicAttachments,
   listCivicNotifications,
   listCommunityFeed,
   listOperationsCivicItems,
@@ -90,7 +91,21 @@ export const appRouter = router({
     publicDetail: publicProcedure.input(publicIdInput).query(async ({ input, ctx }) => {
       const item = await getCivicItemByPublicId(input.publicId);
       if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
-      return { item, updates: await getPublicUpdates(item.id), insights: await listTriageInsights(item.id), signals: await getCommunitySignals(item.id, ctx.user?.id) };
+      const attachments = await listCivicAttachments(item.id);
+      return {
+        item,
+        updates: await getPublicUpdates(item.id),
+        insights: await listTriageInsights(item.id),
+        signals: await getCommunitySignals(item.id, ctx.user?.id),
+        attachments: attachments.map(attachment => ({
+          id: attachment.id,
+          kind: attachment.kind,
+          originalName: attachment.originalName,
+          mimeType: attachment.mimeType,
+          sizeBytes: attachment.sizeBytes,
+          url: `/manus-storage/${attachment.storageKey}`,
+        })),
+      };
     }),
     mine: protectedProcedure.query(({ ctx }) => listCitizenCivicItems(ctx.user.id)),
     mapActivity: publicProcedure.query(() => getMapCivicItems()),

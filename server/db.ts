@@ -227,6 +227,14 @@ export async function listCommunityFeed(viewerId?: number, limit = 30) {
       ...item,
       signals: await getCommunitySignals(item.id, viewerId),
       evidence: image ? { kind: image.kind, originalName: image.originalName, url: `/manus-storage/${image.storageKey}` } : null,
+      attachments: attachments.map(attachment => ({
+        id: attachment.id,
+        kind: attachment.kind,
+        originalName: attachment.originalName,
+        mimeType: attachment.mimeType,
+        sizeBytes: attachment.sizeBytes,
+        url: `/manus-storage/${attachment.storageKey}`,
+      })),
       attachmentCount: attachments.length,
     };
   }));

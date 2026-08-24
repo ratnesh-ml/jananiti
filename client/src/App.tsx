@@ -15,6 +15,8 @@ import Heatmap from "./pages/Heatmap";
 import VerifyNearby from "./pages/VerifyNearby";
 import SubmitIssue from "./pages/SubmitIssue";
 import TrackIssue from "./pages/TrackIssue";
+import Explore from "./pages/Explore";
+import ActionCenter from "./pages/ActionCenter";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -24,6 +26,8 @@ function Router() {
       <Route path={"/report"} component={SubmitIssue} />
       <Route path={"/track"} component={TrackIssue} />
       <Route path={"/activity"} component={PublicActivity} />
+      <Route path={"/explore"} component={Explore} />
+      <Route path={"/notifications"} component={ActionCenter} />
       <Route path={"/heatmap"} component={Heatmap} />
       <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />

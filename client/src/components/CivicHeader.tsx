@@ -6,7 +6,9 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 
 const navigation = [
-  { label: "Explore activity", href: "/activity" },
+  { label: "Local feed", href: "/activity" },
+  { label: "Explore", href: "/explore" },
+  { label: "Action Center", href: "/notifications" },
   { label: "Heat map", href: "/heatmap" },
   { label: "Verify nearby", href: "/verify" },
   { label: "Track a request", href: "/track" },
@@ -36,7 +38,7 @@ export default function CivicHeader() {
     <header className="sticky top-0 z-50 border-b border-[#dce8f3]/80 bg-white/90 backdrop-blur-xl">
       <div className="container flex h-[72px] items-center justify-between gap-4">
         <JananitiMark />
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-1 2xl:flex" aria-label="Primary navigation">
           {navigation.map(item => (
             <Link
               key={item.href}
@@ -71,7 +73,7 @@ export default function CivicHeader() {
         </div>
         <button
           onClick={() => setOpen(value => !value)}
-          className="grid h-10 w-10 place-items-center rounded-lg text-[#17365d] hover:bg-[#f3f7fb] sm:hidden"
+          className="grid h-10 w-10 place-items-center rounded-lg text-[#17365d] hover:bg-[#f3f7fb] 2xl:hidden"
           aria-label="Toggle navigation"
           aria-expanded={open}
         >
@@ -79,7 +81,7 @@ export default function CivicHeader() {
         </button>
       </div>
       {open && (
-        <div className="border-t border-[#e5edf5] bg-white px-4 py-4 sm:hidden">
+        <div className="border-t border-[#e5edf5] bg-white px-4 py-4 2xl:hidden">
           <div className="mx-auto flex max-w-xl flex-col gap-1">
             {navigation.map(item => <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-sm font-bold text-[#345371] hover:bg-[#f4f8fb]">{item.label}</Link>)}
             {user?.role === "admin" && <Link href="/operations" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-sm font-bold text-[#0e5bb7] hover:bg-[#eef6ff]">Coordinator operations</Link>}
@@ -93,9 +95,9 @@ export default function CivicHeader() {
 
 const mobileDestinations = [
   { label: "Home", href: "/", icon: House },
-  { label: "Local", href: "/activity", icon: Compass },
+  { label: "Explore", href: "/explore", icon: Compass },
   { label: "Report", href: "/report", icon: Plus },
-  { label: "Map", href: "/heatmap", icon: Map },
+  { label: "Activity", href: "/notifications", icon: Bell },
   { label: "Me", href: "/me", icon: UserRound },
 ];
 
