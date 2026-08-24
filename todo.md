@@ -127,3 +127,11 @@
 - [ ] Rewrite README as a concise Code for Communities judge submission: problem, solution, differentiated features, Google technology roadmap, architecture, DRFI, privacy, demo route, local run, and test command.
 - [ ] Add judge-ready in-app demo copy and a guided walkthrough route that highlights reporting, community validation, DRFI priority, coordinator operations, and the honest Google migration path.
 - [ ] Provide the full beginner Google/Firebase/Cloud setup instructions directly in chat rather than placing credential instructions in the GitHub repository.
+- [x] Research and document current official free quotas, billing prerequisites, and likely cost exposure for the Jananiti Google/Firebase stack.
+- [x] Produce a cost-minimized hackathon configuration that keeps only essential free-tier services active, defers paid services, and adds billing-budget safeguards before any production credential is requested.
+- [ ] Implement only the free-stage Google boundary: Firebase Google Sign-In and Firestore planning, with DRFI and current privacy-safe map fallback retained.
+- [ ] Keep Google Maps, Places, Vertex AI, Cloud Run, Cloud Functions, Cloud Storage media migration, phone/SMS authentication, and FCM web push disabled until the user opts into billing.
+- [ ] Request only the six Firebase Web App configuration values plus confirmation that Google Sign-In and Firestore are enabled, using secure project secrets.
+- [x] Receive the Firebase Web App configuration through secure project secrets and validate the browser key with a non-mutating Firebase Authentication request.
+- [ ] Confirm that Firebase Google Sign-In is enabled and Firestore has been created in Production mode before switching any live user flow away from the current authentication and database stack.
+- [ ] Design and implement the authenticated Firebase-to-Jananiti account transition and Firestore civic-data migration without disrupting existing citizen, coordinator, and judge-demo flows.
