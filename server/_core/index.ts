@@ -8,6 +8,8 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { registerMapsScriptProxy } from "../mapsScriptProxy";
+import { registerCivicAttachmentRoutes } from "../civicAttachments";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -35,6 +37,8 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
+  registerCivicAttachmentRoutes(app);
+  registerMapsScriptProxy(app);
   registerOAuthRoutes(app);
   // tRPC API
   app.use(

@@ -1,0 +1,36 @@
+# Jananiti Project TODO
+
+- [x] Review the supplied Jananiti frontend deployment, backend deployment, and solution document; record reusable journeys and module priorities.
+- [x] Establish a documented modular tRPC architecture for civic issues, status history, public updates, citizen records, coordinator roles, and notifications.
+- [x] Implement an elegant responsive public portal with civic discovery, submission, tracking, and engagement entry points.
+- [x] Implement authenticated citizen profiles with persistent personal activity and request-status views.
+- [x] Implement structured issue submission with categories, location coordinates, status lifecycle, and public progress updates.
+- [ ] Implement map-based location selection and geographic activity visualization.
+- [x] Implement citizen and coordinator notification records and automatic update triggers for receipt, reassignment, status changes, and resolution.
+- [x] Implement a role-gated coordinator workspace for reviewing, updating, assigning, and resolving civic items.
+- [x] Create reusable components, API contracts, database migrations, and automated tests for the core workflows.
+- [ ] Validate public, citizen, and coordinator core flows in the preview and record known gaps and next milestones.
+- [x] Review the Code for Communities 2 event information, judging criteria, permitted submission requirements, and team registration context.
+- [x] Select and document high-value Google technologies that strengthen Jananiti’s civic impact, feasibility, and demo narrative without introducing unnecessary dependencies.
+- [x] Prepare a concise hackathon demo storyline, differentiators, and submission-readiness checklist aligned to the verified event criteria.
+- [x] Re-inspect the live Jananiti frontend and capture concrete reusable modules, page flows, and user journeys in the research notes.
+- [x] Inspect the live Jananiti backend once it is awake and record any exposed routes, health responses, or API contracts; document an availability blocker if it remains inaccessible.
+- [ ] Find and document the official Code for Communities 2 judging criteria from official participant materials before treating the hackathon discovery as complete.
+- [x] Summarize verified hackathon submission requirements and team registration steps in a dedicated checklist with sources.
+- [x] Analyze the newly supplied JanaNiti slide deck and map every validated module, input, data requirement, and workflow into the architecture and delivery roadmap.
+- [x] Complete the map integration verification or document the remaining platform-proxy dependency and an appropriate production replacement path.
+- [x] Extend citizen account onboarding, profile management, consent records, and persistent activity flows while retaining the existing secure OAuth foundation.
+- [x] Add a manual latitude/longitude fallback for location capture while the interactive map bootstrap remains unavailable.
+- [x] Add a manual latitude/longitude fallback for location capture while the interactive map bootstrap remains unavailable.
+- [ ] Implement and verify citizen receipt notifications and complete coordinator assignment/reassignment notification scenarios.
+- [ ] Add assignment controls to the coordinator workspace UI and verify the full assign-to-resolve workflow.
+- [ ] Add automated tests for civic item creation, notification triggers, profile/consent persistence, operations mutations, and attachment ownership/validation.
+- [ ] Implement and verify a real post-login account-setup onboarding step with profile completion and consent capture.
+- [x] Design an Aadhaar-aware future duplicate-prevention capability that never stores raw Aadhaar values and is gated behind legal, consent, security, and authorized-verification requirements.
+- [ ] Implement configurable evidence and demand inputs for DRFI, explainable priority scoring, and an administrator review workflow for every score.
+- [ ] Expand the role-gated administrator workspace into a connected control centre for civic items, assignments, priorities, evidence inputs, notifications, and account/role administration.
+- [ ] Verify that the database, tRPC procedures, frontend, roles, notifications, and account setup operate as one connected platform.
+- [ ] Update the architecture document with a complete slide-deck coverage matrix that maps each module, input, DRFI factor, role, and workflow to a verified feature, configurable framework, or external-service adapter.
+- [ ] Add a delivery roadmap that distinguishes the hackathon MVP, the next platform build phase, and deferred external integrations from the complete slide-deck vision.
+- [x] Update the architecture document with a complete slide-deck coverage matrix that maps each module, input, DRFI factor, role, and workflow to a verified feature, configurable framework, or external-service adapter.
+- [x] Add a delivery roadmap that distinguishes the hackathon MVP, the next platform build phase, and deferred external integrations from the complete slide-deck vision.

@@ -1,16 +1,26 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import CitizenProfile from "@/pages/CitizenProfile";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import Operations from "./pages/Operations";
+import PublicActivity from "./pages/PublicActivity";
+import SubmitIssue from "./pages/SubmitIssue";
+import TrackIssue from "./pages/TrackIssue";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/report"} component={SubmitIssue} />
+      <Route path={"/track"} component={TrackIssue} />
+      <Route path={"/activity"} component={PublicActivity} />
+      <Route path={"/me"} component={CitizenProfile} />
+      <Route path={"/operations"} component={Operations} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
