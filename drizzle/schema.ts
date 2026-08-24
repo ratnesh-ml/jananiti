@@ -161,6 +161,16 @@ export const civicVerifications = mysqlTable("civic_verifications", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, table => [uniqueIndex("civic_verifications_item_user_idx").on(table.civicItemId, table.userId), index("civic_verifications_item_idx").on(table.civicItemId)]);
 
+export const civicComments = mysqlTable("civic_comments", {
+  id: int("id").autoincrement().primaryKey(),
+  civicItemId: int("civicItemId").notNull().references(() => civicItems.id, { onDelete: "cascade" }),
+  authorId: int("authorId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  parentCommentId: int("parentCommentId"),
+  body: text("body").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [index("civic_comments_item_created_idx").on(table.civicItemId, table.createdAt), index("civic_comments_parent_idx").on(table.parentCommentId)]);
+
 export const localVerificationAlerts = mysqlTable("local_verification_alerts", {
   id: int("id").autoincrement().primaryKey(),
   civicItemId: int("civicItemId").notNull().references(() => civicItems.id, { onDelete: "cascade" }),

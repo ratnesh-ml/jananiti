@@ -64,9 +64,7 @@ export default function CivicHeader() {
               )}
               <Button variant="outline" size="sm" onClick={logout} className="border-[#c9d9e9] bg-white text-[#345371]">Sign out</Button>
             </>
-          ) : (
-            <Button variant="ghost" onClick={() => startLogin()} className="font-bold text-[#345371]">Sign in</Button>
-          )}
+          ) : <Link href="/signin" className="rounded-lg px-3 py-2 text-sm font-bold text-[#345371] hover:bg-[#f3f7fb]">Sign in</Link>}
           <Link href="/report" className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-[#0e5bb7] px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(14,91,183,0.18)] transition-all hover:bg-[#0a4b98] active:scale-[0.97]">
             Report an issue <ChevronRight className="h-4 w-4" />
           </Link>

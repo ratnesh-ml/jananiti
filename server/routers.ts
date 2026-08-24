@@ -6,6 +6,7 @@ import {
   assignCivicItem,
   changeCivicItemStatus,
   createCivicItem,
+  createCivicComment,
   createCivicNotification,
   dispatchLocalVerificationAlert,
   getAllUpdates,
@@ -19,6 +20,7 @@ import {
   getPublicUpdates,
   listCitizenCivicItems,
   listCitizenBadges,
+  listPublicCivicComments,
   listCivicAttachments,
   listCivicNotifications,
   listCommunityFeed,
@@ -95,6 +97,7 @@ export const appRouter = router({
       return {
         item,
         updates: await getPublicUpdates(item.id),
+        comments: await listPublicCivicComments(item.id),
         insights: await listTriageInsights(item.id),
         signals: await getCommunitySignals(item.id, ctx.user?.id),
         attachments: attachments.map(attachment => ({
@@ -140,6 +143,14 @@ export const appRouter = router({
       const item = await getCivicItemByPublicId(input.publicId);
       if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
       return setCivicVerification({ civicItemId: item.id, userId: ctx.user.id, response: input.response });
+    }),
+    comment: protectedProcedure.input(publicIdInput.extend({
+      body: z.string().trim().min(1).max(600),
+      parentCommentId: z.number().int().positive().nullable().optional(),
+    })).mutation(async ({ ctx, input }) => {
+      const item = await getCivicItemByPublicId(input.publicId);
+      if (!item || item.visibility !== "public") throw new TRPCError({ code: "NOT_FOUND" });
+      return createCivicComment({ civicItemId: item.id, authorId: ctx.user.id, body: input.body, parentCommentId: input.parentCommentId });
     }),
     badges: protectedProcedure.query(({ ctx }) => listCitizenBadges(ctx.user.id)),
   }),

@@ -1,8 +1,9 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { nanoid } from "nanoid";
 import {
   civicAttachments,
+  civicComments,
   civicReactions,
   civicVerifications,
   citizenBadges,
@@ -238,6 +239,29 @@ export async function listCommunityFeed(viewerId?: number, limit = 30) {
       attachmentCount: attachments.length,
     };
   }));
+}
+
+export async function listPublicCivicComments(civicItemId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: civicComments.id,
+    parentCommentId: civicComments.parentCommentId,
+    body: civicComments.body,
+    createdAt: civicComments.createdAt,
+  }).from(civicComments).where(eq(civicComments.civicItemId, civicItemId)).orderBy(asc(civicComments.createdAt));
+}
+
+export async function createCivicComment(input: { civicItemId: number; authorId: number; body: string; parentCommentId?: number | null }) {
+  const db = await getDb();
+  ensureDb(db);
+  if (input.parentCommentId) {
+    const parent = await db.select({ id: civicComments.id }).from(civicComments)
+      .where(and(eq(civicComments.id, input.parentCommentId), eq(civicComments.civicItemId, input.civicItemId))).limit(1);
+    if (!parent.length) throw new Error("A reply must belong to an existing comment on this civic record.");
+  }
+  const [result] = await db.insert(civicComments).values({ ...input, parentCommentId: input.parentCommentId ?? null });
+  return { id: Number(result.insertId), parentCommentId: input.parentCommentId ?? null, body: input.body, createdAt: new Date() };
 }
 
 export async function setCivicReaction(input: { civicItemId: number; userId: number; reaction: "up" | "down" }) {

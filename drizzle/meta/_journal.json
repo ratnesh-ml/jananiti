@@ -50,6 +50,13 @@
       "when": 1787569802790,
       "tag": "0006_daily_mister_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1787573357767,
+      "tag": "0007_long_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }
