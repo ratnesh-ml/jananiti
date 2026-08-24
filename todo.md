@@ -154,3 +154,5 @@
 - [ ] Reproduce the user-reported Vercel public-view failure from a fresh session, repair its routing or client bootstrap, and verify the judge page visibly renders without relying on an authenticated dashboard session.
 - [ ] Replace the Vercel static guide with an explicitly labelled browser-local civic demo that supports issue creation, community validation, deterministic priority explanation, and coordinator status actions without authentication or external data persistence.
 - [ ] Test the Vercel-only interactive demo as a fresh public visitor and update public submission copy with its browser-local privacy and reset behavior.
+- [ ] Deploy a separate teammate-facing Jananiti full-app Vercel route while preserving the verified interactive judge demo and clearly isolating unavailable legacy backend/auth services.
+- [ ] Validate and share the new full-app Vercel URL only after its real accessible routes render without a loading-loop or unsupported-service claim.

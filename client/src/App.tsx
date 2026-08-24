@@ -23,7 +23,7 @@ import Discussion from "./pages/Discussion";
 import Onboarding from "./pages/Onboarding";
 import JudgeDemo from "./pages/JudgeDemo";
 import { useLocation } from "wouter";
-import { shouldRenderStaticJudgeDemo } from "./lib/judgeDemoFallback";
+import { shouldRenderStaticJudgeDemo, shouldRenderTeamWorkspace } from "./lib/judgeDemoFallback";
 
 function Router() {
   const { user, loading } = useAuth();
@@ -32,9 +32,10 @@ function Router() {
   // The Vercel submission domain intentionally renders a static, public judge
   // walkthrough until its Firebase-backed server API is separately configured.
   // This prevents a legacy serverless crash from blocking hackathon evaluation.
-  if (shouldRenderStaticJudgeDemo(hostname, location)) return <JudgeDemo />;
+  if (shouldRenderTeamWorkspace(hostname)) return <JudgeDemo variant="team" />;
+  if (shouldRenderStaticJudgeDemo(hostname, location)) return <JudgeDemo variant="judge" />;
   if (loading) return <div className="grid min-h-screen place-items-center bg-[#f6f8fb] px-6 text-center"><div><div className="mx-auto h-10 w-10 animate-pulse rounded-2xl bg-[#0e5bb7]" /><p className="mt-4 text-sm font-bold text-[#54708d]">Preparing your civic space…</p></div></div>;
-  if (!user) return location === "/judge-demo" ? <JudgeDemo /> : location === "/signin" ? <SignIn /> : <Onboarding />;
+  if (!user) return location === "/judge-demo" ? <JudgeDemo variant="judge" /> : location === "/signin" ? <SignIn /> : <Onboarding />;
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -46,7 +47,7 @@ function Router() {
       <Route path={"/signin"} component={SignIn} />
       <Route path={"/discussion"} component={Discussion} />
       <Route path={"/onboarding"} component={Onboarding} />
-      <Route path={"/judge-demo"} component={JudgeDemo} />
+      <Route path={"/judge-demo"} component={() => <JudgeDemo variant="judge" />} />
       <Route path={"/heatmap"} component={Heatmap} />
       <Route path={"/verify"} component={VerifyNearby} />
       <Route path={"/me"} component={CitizenProfile} />

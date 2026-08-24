@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldRenderStaticJudgeDemo } from "./judgeDemoFallback";
+import { shouldRenderStaticJudgeDemo, shouldRenderTeamWorkspace } from "./judgeDemoFallback";
 
 describe("Vercel judge-demo fallback", () => {
   it("makes the approved Vercel host immediately judge-readable", () => {
@@ -12,5 +12,10 @@ describe("Vercel judge-demo fallback", () => {
 
   it("does not replace ordinary routes on other hosts", () => {
     expect(shouldRenderStaticJudgeDemo("localhost", "/signin")).toBe(false);
+  });
+
+  it("routes the separate teammate Vercel host to the browser-local workspace", () => {
+    expect(shouldRenderTeamWorkspace("jananiti-team.vercel.app")).toBe(true);
+    expect(shouldRenderTeamWorkspace("jananiti009.vercel.app")).toBe(false);
   });
 });

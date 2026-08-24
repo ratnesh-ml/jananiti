@@ -42,7 +42,8 @@ function scoreTone(tone: ReturnType<typeof calculateDemoDrfi>["tone"]) {
   }[tone];
 }
 
-export default function JudgeDemo() {
+export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "team" }) {
+  const isTeamWorkspace = variant === "team";
   const [draft, setDraft] = useState<{ title: string; category: string; locality: string; visibility: "public" | "private" }>({ title: "", category: categoryOptions[0], locality: "", visibility: "public" });
   const [issue, setIssue] = useState<DemoIssue | null>(null);
   const [choice, setChoice] = useState<VerificationChoice>(null);
@@ -62,11 +63,11 @@ export default function JudgeDemo() {
     <main className="min-h-screen bg-[#f6f8fb] px-4 py-6 text-[#102a43] sm:px-8 sm:py-10">
       <section className="mx-auto max-w-5xl">
         <div className="rounded-[2rem] bg-[#0c3f78] px-6 py-9 text-white shadow-xl sm:px-10">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#a9daf9]">Code for Communities 2 · Interactive judge demo</p>
-          <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">From a local observation to accountable civic action.</h1>
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-[#d6ecff] sm:text-base">Create one browser-local civic record, validate it, tune all eight explainable DRFI inputs, and move it through an accountable coordinator flow.</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#a9daf9]">{isTeamWorkspace ? "JanaNiti · Team workspace" : "Code for Communities 2 · Interactive judge demo"}</p>
+          <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">{isTeamWorkspace ? "A shareable civic workspace your team can use together." : "From a local observation to accountable civic action."}</h1>
+          <p className="mt-4 max-w-3xl text-sm leading-6 text-[#d6ecff] sm:text-base">{isTeamWorkspace ? "Use the working report, community validation, deterministic DRFI, and coordinator workflow sandbox to explain the full JanaNiti product journey to teammates." : "Create one browser-local civic record, validate it, tune all eight explainable DRFI inputs, and move it through an accountable coordinator flow."}</p>
           <div className="mt-6 flex flex-wrap gap-3 text-xs font-bold">
-            <span className="rounded-full bg-white/15 px-3 py-2">No sign-in</span>
+            <span className="rounded-full bg-white/15 px-3 py-2">{isTeamWorkspace ? "Team-ready sandbox" : "No sign-in"}</span>
             <span className="rounded-full bg-white/15 px-3 py-2">No server calls</span>
             <span className="rounded-full bg-white/15 px-3 py-2">Resets on refresh</span>
             <span className="rounded-full bg-white/15 px-3 py-2">Explainable DRFI</span>
