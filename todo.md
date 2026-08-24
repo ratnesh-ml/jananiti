@@ -117,3 +117,4 @@
 - [ ] Initialize and publish the organized Jananiti source repository to the user’s GitHub account without exposing secrets or generated credentials.
 - [ ] Prepare and validate a Vercel-compatible deployment configuration for the React and Express application, documenting any runtime, environment-variable, database, and storage requirements.
 - [ ] Publish the Vercel deployment only after validating the GitHub handoff and obtaining required external account authorization or credentials securely.
+- [ ] Validate the Vercel serverless adapter and route configuration in a real Vercel build so public routes serve the Jananiti client instead of exposing bundled server source.
