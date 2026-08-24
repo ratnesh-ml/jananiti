@@ -118,3 +118,8 @@
 - [ ] Prepare and validate a Vercel-compatible deployment configuration for the React and Express application, documenting any runtime, environment-variable, database, and storage requirements.
 - [ ] Publish the Vercel deployment only after validating the GitHub handoff and obtaining required external account authorization or credentials securely.
 - [ ] Validate the Vercel serverless adapter and route configuration in a real Vercel build so public routes serve the Jananiti client instead of exposing bundled server source.
+- [x] Audit every Manus-specific production dependency and map it to a Google-native replacement without losing citizen, community, admin, database, media, notification, or audit capabilities.
+- [x] Verify and document that the deterministic DRFI formula works independently of AI, including inputs, thresholds, explainability, tests, and human-review boundaries.
+- [x] Design Vertex AI usage as optional, constrained draft triage and summarization with structured output, no autonomous priority decisions, and no replacement of DRFI or human evidence review.
+- [x] Produce a complete beginner-friendly Google credential inventory and Console setup guide for Firebase Authentication, Firestore, Cloud Storage, Cloud Run/Functions, FCM, Maps, Vertex AI, App Check, Secret Manager, Analytics, Logging, and Vercel deployment.
+- [ ] Begin Google-native adapter implementation only after the user supplies the required configuration through secure project secrets rather than chat.
