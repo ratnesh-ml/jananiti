@@ -192,3 +192,4 @@
 - [x] Write and publish a detailed Code for Communities hackathon README grounded in implemented features, verified Firebase/Vercel state, truthful limitation disclosure, tests, setup steps, and the live teammate Vercel link.
 - [x] Expose the full authenticated JanaNiti civic-social flow—Home feed, issue detail, staged report, map/explore, activity, profile, and onboarding—with every control backed by real Firebase data, isolated test data, or explicit unavailable feedback.
 - [x] Ensure no authenticated-screen metric, validation percentage, authority assignment, AI decision, citizen identity, or civic-impact claim is presented as real unless it is persisted and authorized Firebase data.
+- [x] Perform non-destructive live verification of signed-in Explore, Activity, Profile, Report shortcuts, zero-record feedback, free-map fallback, and true 1280px/390px responsive presentation without creating production civic data.
