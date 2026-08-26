@@ -1,4 +1,5 @@
-import { signInWithPopup, signOut } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
+import { useEffect, useState } from "react";
 import { isFirebaseFreeStageConfigured } from "./config";
 import { createGoogleSignInProvider, getFirebaseAuth } from "./client";
 
@@ -17,6 +18,23 @@ export async function signInWithFirebaseGoogle() {
     await signOut(auth);
     throw new Error("Google Sign-In was verified by Firebase but Jananiti could not start a civic session.");
   }
+}
+
+/** Direct Firebase session used by the Vercel Firebase application. */
+export async function signInWithFirebaseGoogleDirect() {
+  return signInWithPopup(getFirebaseAuth(), createGoogleSignInProvider());
+}
+
+export function useFirebaseUser() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => onAuthStateChanged(getFirebaseAuth(), (nextUser) => {
+    setUser(nextUser);
+    setLoading(false);
+  }), []);
+
+  return { user, loading };
 }
 
 export async function signOutFromFirebaseIfPresent() {

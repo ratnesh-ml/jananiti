@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Citizen-provided evidence stays in a reporter-owned prefix. The Firestore
+    // record controls whether the metadata is public; object reads are therefore
+    // deliberately restricted to the reporter until a server-side delivery layer
+    // can enforce record visibility consistently.
+    match /civicEvidence/{userId}/{uploadId}/{fileName} {
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches("(image|audio|video)/.*|application/pdf|text/plain");
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

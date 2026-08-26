@@ -22,21 +22,18 @@ import SignIn from "./pages/SignIn";
 import Discussion from "./pages/Discussion";
 import Onboarding from "./pages/Onboarding";
 import JudgeDemo from "./pages/JudgeDemo";
+import FirebaseWorkspace from "./pages/FirebaseWorkspace";
 import { useLocation } from "wouter";
-import { shouldRenderStaticJudgeDemo, shouldRenderTeamWorkspace } from "./lib/judgeDemoFallback";
+import { shouldRenderFirebaseWorkspace, shouldRenderStaticJudgeDemo } from "./lib/judgeDemoFallback";
 
-function Router() {
+function LegacyRouter() {
   const { user, loading } = useAuth();
   const [location] = useLocation();
   const hostname = typeof window === "undefined" ? "" : window.location.hostname;
-  // The Vercel submission domain intentionally renders a static, public judge
-  // walkthrough until its Firebase-backed server API is separately configured.
-  // This prevents a legacy serverless crash from blocking hackathon evaluation.
-  if (shouldRenderTeamWorkspace(hostname)) return <JudgeDemo variant="team" />;
   if (shouldRenderStaticJudgeDemo(hostname, location)) return <JudgeDemo variant="judge" />;
   if (loading) return <div className="grid min-h-screen place-items-center bg-[#f6f8fb] px-6 text-center"><div><div className="mx-auto h-10 w-10 animate-pulse rounded-2xl bg-[#0e5bb7]" /><p className="mt-4 text-sm font-bold text-[#54708d]">Preparing your civic space…</p></div></div>;
   if (!user) return location === "/judge-demo" ? <JudgeDemo variant="judge" /> : location === "/signin" ? <SignIn /> : <Onboarding />;
-  return (
+  return (<>
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/report"} component={SubmitIssue} />
@@ -59,7 +56,14 @@ function Router() {
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
-  );
+    {user && <CivicMobileNav />}
+  </>);
+}
+
+function Router() {
+  const hostname = typeof window === "undefined" ? "" : window.location.hostname;
+  if (shouldRenderFirebaseWorkspace(hostname)) return <FirebaseWorkspace />;
+  return <LegacyRouter />;
 }
 
 // NOTE: About Theme
@@ -68,7 +72,6 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
-  const { user } = useAuth();
   return (
     <ErrorBoundary>
       <ThemeProvider
@@ -78,7 +81,6 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <div className="pb-20 sm:pb-0"><Router /></div>
-          {user && <CivicMobileNav />}
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

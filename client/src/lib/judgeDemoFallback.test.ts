@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldRenderStaticJudgeDemo, shouldRenderTeamWorkspace } from "./judgeDemoFallback";
+import { shouldRenderFirebaseWorkspace, shouldRenderStaticJudgeDemo } from "./judgeDemoFallback";
 
 describe("Vercel judge-demo fallback", () => {
   it("makes the approved Vercel host immediately judge-readable", () => {
@@ -14,8 +14,8 @@ describe("Vercel judge-demo fallback", () => {
     expect(shouldRenderStaticJudgeDemo("localhost", "/signin")).toBe(false);
   });
 
-  it("routes the separate teammate Vercel host to the browser-local workspace", () => {
-    expect(shouldRenderTeamWorkspace("jananiti-team.vercel.app")).toBe(true);
-    expect(shouldRenderTeamWorkspace("jananiti009.vercel.app")).toBe(false);
+  it("routes the separate teammate Vercel host to the Firebase workspace", () => {
+    expect(shouldRenderFirebaseWorkspace("jananiti-team.vercel.app")).toBe(true);
+    expect(shouldRenderFirebaseWorkspace("jananiti009.vercel.app")).toBe(false);
   });
 });

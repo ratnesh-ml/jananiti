@@ -5,6 +5,6 @@ export function shouldRenderStaticJudgeDemo(hostname: string, path: string) {
   return path === "/judge-demo" || hostname === VERCEL_JUDGE_HOST;
 }
 
-export function shouldRenderTeamWorkspace(hostname: string) {
+export function shouldRenderFirebaseWorkspace(hostname: string) {
   return hostname === VERCEL_TEAM_WORKSPACE_HOST;
 }

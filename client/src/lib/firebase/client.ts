@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 import { firebaseWebConfig } from "./config";
 
 /**
@@ -26,9 +27,12 @@ export function getFirebaseFirestore(): Firestore {
   return getFirestore(getFirebaseApp());
 }
 
+export function getFirebaseStorage(): FirebaseStorage {
+  return getStorage(getFirebaseApp());
+}
+
 export function createGoogleSignInProvider() {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   return provider;
 }
-

@@ -20,4 +20,17 @@ describe("Firestore zero-cost security boundary", () => {
     expect(rules).toContain("request.resource.data.role == resource.data.role");
     expect(rules).not.toMatch(/match \/attachments\/[\s\S]*allow (?:read|write): if true/);
   });
+
+  it("allows only constrained reporter-owned evidence metadata", () => {
+    expect(rules).toContain('"evidence", "createdAt", "updatedAt"');
+    expect(rules).toContain("request.resource.data.evidence.path.matches");
+    expect(rules).toContain("request.resource.data.evidence.size <= 10 * 1024 * 1024");
+  });
+
+  it("keeps reactions distinct from verification and bounds civic comments", () => {
+    expect(rules).toContain("match /reactions/{userId}");
+    expect(rules).toContain('request.resource.data.reaction in ["up", "down"]');
+    expect(rules).toContain("request.resource.data.body.size() <= 500");
+    expect(rules).toContain("request.resource.data.parentCommentId == null");
+  });
 });

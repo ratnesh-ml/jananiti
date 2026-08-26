@@ -58,8 +58,17 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly([
           "reporterUid", "category", "title", "description", "locationLabel",
           "locality", "latitude", "longitude", "visibility", "status", "priority",
-          "createdAt", "updatedAt"
-        ]);
+          "evidence", "createdAt", "updatedAt"
+        ])
+        && (!request.resource.data.keys().hasAny(["evidence"])
+          || (request.resource.data.evidence is map
+            && request.resource.data.evidence.keys().hasOnly(["name", "contentType", "path", "size", "url"])
+            && request.resource.data.evidence.name is string
+            && request.resource.data.evidence.contentType is string
+            && request.resource.data.evidence.path is string
+            && request.resource.data.evidence.size is number
+            && request.resource.data.evidence.size <= 10 * 1024 * 1024
+            && request.resource.data.evidence.path.matches("^civicEvidence/" + request.auth.uid + "/.*")));
       // The reporter may withdraw a report only before assignment. Coordinator
       // workflow, status, priority, and DRFI fields remain server-admin actions.
       allow update: if signedIn()
@@ -76,8 +85,23 @@ service cloud.firestore {
         allow read: if signedIn() && canReadIssue(issueId);
         allow create: if signedIn() && canReadIssue(issueId)
           && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.body is string
+          && request.resource.data.body.size() >= 2
+          && request.resource.data.body.size() <= 500
+          && request.resource.data.parentCommentId == null
           && request.resource.data.keys().hasOnly(["authorUid", "body", "parentCommentId", "createdAt"]);
         allow update, delete: if false;
+      }
+
+      // A reaction is a personal engagement signal, never a truth decision.
+      // The document key prevents duplicate reactions per Firebase account.
+      match /reactions/{userId} {
+        allow read: if signedIn() && canReadIssue(issueId);
+        allow create, update: if isSelf(userId) && canReadIssue(issueId)
+          && request.resource.data.userUid == request.auth.uid
+          && request.resource.data.reaction in ["up", "down"]
+          && request.resource.data.keys().hasOnly(["userUid", "reaction", "updatedAt"]);
+        allow delete: if false;
       }
 
       // Document ID must equal the authenticated user's UID, giving one response

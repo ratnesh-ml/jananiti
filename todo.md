@@ -151,11 +151,20 @@
 - [x] Remove Manus-auth and managed-preview references from all judge-facing routes, README links, and submission copy; keep only the verified Vercel link.
 - [x] Perform a final public-repository security audit for credential-like strings, environment files, internal setup notes, and secret-bearing artifacts before hackathon submission.
 - [x] Rewrite the public README and Vercel judge walkthrough around the verified Vercel-only static demo, its test evidence, and clearly bounded Firebase status.
-- [ ] Reproduce the user-reported Vercel public-view failure from a fresh session, repair its routing or client bootstrap, and verify the judge page visibly renders without relying on an authenticated dashboard session.
-- [ ] Replace the Vercel static guide with an explicitly labelled browser-local civic demo that supports issue creation, community validation, deterministic priority explanation, and coordinator status actions without authentication or external data persistence.
-- [ ] Test the Vercel-only interactive demo as a fresh public visitor and update public submission copy with its browser-local privacy and reset behavior.
-- [ ] Deploy a separate teammate-facing Jananiti full-app Vercel route while preserving the verified interactive judge demo and clearly isolating unavailable legacy backend/auth services.
-- [ ] Validate and share the new full-app Vercel URL only after its real accessible routes render without a loading-loop or unsupported-service claim.
+- [x] Reproduce the user-reported Vercel public-view failure from a fresh session, repair its routing or client bootstrap, and verify the judge page visibly renders without relying on an authenticated dashboard session.
+- [x] Replace the Vercel static guide with an explicitly labelled browser-local civic demo that supports issue creation, community validation, deterministic priority explanation, and coordinator status actions without authentication or external data persistence.
+- [x] Test the Vercel-only interactive demo as a fresh public visitor and update public submission copy with its browser-local privacy and reset behavior.
+- [x] Deploy a separate teammate-facing Jananiti full-app Vercel route while preserving the verified interactive judge demo and clearly isolating unavailable legacy backend/auth services.
+- [x] Validate and share the new full-app Vercel URL only after its real accessible routes render without a loading-loop or unsupported-service claim.
 - [x] Redesign Jananiti’s mobile report and browser-local workspace using original white-canvas, compact-card, pill-control, cobalt-accent, and responsive-spacing principles informed by the uploaded reference without using its proprietary font, branding, or assets.
 - [x] Add compact, explicit image, audio, video, and document evidence actions with browser capability handling, clear selected-file state, and mobile-safe controls.
-- [ ] Verify the redesigned report composer at 390px and desktop widths, including focus, reduced-motion, and no-overflow behavior.
+- [x] Verify the redesigned report composer at 390px and desktop widths, including focus, reduced-motion, and no-overflow behavior.
+- [ ] Replace the browser-local Jananiti team workspace with Firebase-authenticated Firestore-backed report, verification, priority, and lifecycle data flows.
+- [ ] Replace Firestore test-mode access with reviewed production rules and verify private report, public record, verification, and coordinator authorization behavior before data activation.
+- [ ] Configure the production Vercel application for Firebase, perform real Google Sign-In and Firestore E2E checks, then remove browser-local demo-only wording and routes only after the corresponding production flow works.
+- [ ] Audit and push the Firebase production cutover to the public GitHub repository without credentials, private keys, or test data, then share the verified full-app Vercel link.
+- [ ] Audit the Firebase teammate workspace for real report creation, public-feed visibility, reaction, comment, and one-response verification behavior; distinguish implemented features from legacy or browser-local-only functionality.
+- [ ] Define and evaluate a privacy-preserving, non-decisional small-model capability for Jananiti, including permitted civic tasks, data provenance, safety evaluation, model licensing, Vercel/Firebase hosting feasibility, and zero-cost constraints.
+- [ ] Implement only approved, testable social-workflow improvements and model integration boundaries after Firebase persistence and security rules are verified.
+- [ ] Compare and select an isolated temporary persistence option for JanaNiti end-to-end testing, with a seeded-test-data policy, cleanup path, no production credentials, and no impact on the public teammate host.
+- [x] Add tested Firebase client and Firestore-rule support for one account-scoped support/concern reaction and bounded top-level constructive comments, explicitly separate from true/not-true verification.
