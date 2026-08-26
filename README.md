@@ -42,6 +42,19 @@ The live workspace is an original responsive civic-social experience. Mobile use
 
 Firestore is configured around a default-deny policy, then grants narrow public, owner, and account-scoped social permissions. Firebase Security Rules evaluate every client request against the current authentication and document context. [1] [2]
 
+### Authorised production E2E evidence
+
+With the reporter’s explicit approval, JanaNiti performed one **QA-only** public production test on 26 August 2026. The record, comment, and social controls plainly state that they are not a civic claim. They contain no media, coordinates, personal data, address, identity document, or real-world allegation.
+
+| Live check | Verified outcome | Boundary |
+|---|---|---|
+| Public report write and feed reload | One labelled QA-only report persisted with `submitted` status and displayed in the authenticated feed, detail, Activity, and Profile surfaces. | This is not evidence of a real complaint or authority action. |
+| Public discussion and reaction | One bounded QA comment and one account-scoped Support reaction persisted. | Reactions remain separate from truth verification and DRFI. |
+| One-response verification | One Confirm response persisted as a single account-keyed verification document. | It is QA data, not a claim that the issue is true. |
+| Free map privacy behavior | The record renders in Explore’s accessible-record list but produces **0 map markers** because its coordinates are `null`. | Map markers require voluntarily stored finite coordinates. |
+
+The QA-only record remains visibly labelled in the live workspace because normal-user deletion is not implemented. Private-report production E2E, coordinator actions, evidence uploads, and local-model inference remain unverified or unavailable as noted below.
+
 ### Privacy boundary
 
 JanaNiti does **not** ask for Aadhaar, VID, OTPs, biometrics, raw identity documents, or exact home addresses. A resident chooses public/private visibility, and a public report only reveals the wording and locality that resident intentionally provides.
@@ -108,11 +121,12 @@ That model is intentionally **not active** until there are consented labelled ex
 
 | Capability | Status | Notes |
 |---|---|---|
-| Firebase Google Sign-In | **Configured** | `jananiti-team.vercel.app` is an authorised Firebase Authentication domain. |
-| Firestore civic client and rules | **Implemented** | Default-deny policy, civic subcollections, and feed index configuration are present. |
-| Public/private reports | **Implemented** | Visibility is selected before review and enforced by the client and Firestore rules. |
-| Reactions, comments, verification | **Implemented** | Client contracts and Emulator-rule tests cover account-scoped and bounded behavior. |
-| Free interactive map | **Implemented** | Leaflet/OpenStreetMap map renders only eligible records. |
+| Firebase Google Sign-In | **Live verified** | `jananiti-team.vercel.app` is an authorised Firebase Authentication domain and the authenticated workspace has been exercised. |
+| Firestore civic client, rules, and indexes | **Live verified (public path)** | Default-deny rules are active; the `visibility + createdAt` and `reporterUid + createdAt` feed indexes are enabled. |
+| Public reports | **Live verified once** | An explicitly authorised QA-only public report completed the staged write, reload, feed, detail, and lifecycle path. |
+| Private reports | **Implemented; production E2E pending** | Visibility is selected before review and policy-tested, but an additional consented production private-record test has not been performed. |
+| Reactions, comments, verification | **Live verified once** | The QA-only record has one account-scoped Support reaction, one bounded QA comment, and one account-keyed Confirm response; Emulator tests cover policy boundaries. |
+| Free interactive map | **Live verified** | Leaflet/OpenStreetMap renders only eligible records; the QA-only record has no coordinates and correctly produces no marker. |
 | File evidence storage | **Not enabled** | Requires Firebase Storage provisioning, approved rules, retention policy, and billing decision. |
 | Coordinator administration | **Not enabled** | Requires trusted Admin SDK / Cloud Run / Functions role provisioning and audit controls. |
 | Local model inference | **Not enabled** | A safe scaffold exists; no unreviewed model output is shown as live. |
@@ -141,7 +155,7 @@ pnpm build
 pnpm dev
 ```
 
-The current suite checks TypeScript, deterministic DRFI, civic lifecycle contracts, Firestore policy artifacts, Firebase Emulator-rule scenarios, Firebase social-client behavior, evidence controls, map-marker eligibility, and the production build. The latest local run completed **56 passing tests with 4 explicitly skipped Emulator-dependent cases**. No test seeds public civic data.
+The current suite checks TypeScript, deterministic DRFI, civic lifecycle contracts, Firestore policy artifacts, Firebase Emulator-rule scenarios, Firebase social-client behavior, evidence controls, map-marker eligibility, and the production build. The latest local run completed **56 passing tests with 4 explicitly skipped Emulator-dependent cases**. The dedicated `pnpm test:firebase-rules` command supplies the Firestore Emulator and passes its four policy assertions. Automated tests do not seed production civic data; the separately authorised, visibly labelled QA-only production record described above is not a test fixture.
 
 ### Firebase configuration names
 
@@ -163,11 +177,11 @@ The repository excludes environment files, service-account JSON, private keys, m
 
 ## Responsible roadmap
 
-The next milestones are a separate Firebase test project, a participant-created end-to-end report test, approved Firebase Storage with retention controls, trusted coordinator administration, optional App Check, and an independently evaluated draft-only model deployment. Each must preserve the separation between public discussion, structured verification, deterministic priority context, and authorised civic action.
+The next milestones are a consented production **private-report** test or separate Firebase test project, a normal-user deletion/retention path for QA data, approved Firebase Storage with retention controls, trusted coordinator administration, optional App Check, and an independently evaluated draft-only model deployment. Each must preserve the separation between public discussion, structured verification, deterministic priority context, and authorised civic action.
 
 ## Integrity statement
 
-JanaNiti does not claim that synthetic layout cards, browser-local demo state, unprovisioned Storage, untrained model scaffolding, coordinator assignments, resolution events, or uncreated Firestore records are real civic outcomes. The project exposes its working controls and production gates so judges, teammates, and residents can evaluate it fairly.
+JanaNiti does not claim that synthetic layout cards, browser-local demo state, the retained QA-only Firestore record, unprovisioned Storage, untrained model scaffolding, coordinator assignments, or resolution events are real civic outcomes. The project exposes its working controls and production gates so judges, teammates, and residents can evaluate it fairly.
 
 ## References
 
