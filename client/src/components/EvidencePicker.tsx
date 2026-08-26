@@ -29,11 +29,15 @@ export default function EvidencePicker({
   onChoose,
   onRemove,
   maxSizeLabel = "10 MB max",
+  disabled = false,
+  unavailableReason,
 }: {
   file: File | null;
   onChoose: (file: File | null) => void;
   onRemove: () => void;
   maxSizeLabel?: string;
+  disabled?: boolean;
+  unavailableReason?: string;
 }) {
   const kind = evidenceKindForFile(file);
   return (
@@ -41,7 +45,7 @@ export default function EvidencePicker({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-bold tracking-[-0.01em] text-[#0a1317]">Add evidence</p>
-          <p className="mt-0.5 text-xs leading-5 text-[#5d6c7b]">Choose one clear file. You can replace it before review.</p>
+          <p className="mt-0.5 text-xs leading-5 text-[#5d6c7b]">{disabled ? unavailableReason ?? "Evidence uploads are currently unavailable." : "Choose one clear file. You can replace it before review."}</p>
         </div>
         <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#5d6c7b] ring-1 ring-[#e4e8ed]">{maxSizeLabel}</span>
       </div>
@@ -49,10 +53,10 @@ export default function EvidencePicker({
         {evidenceOptions.map((option) => {
           const Icon = option.icon;
           return (
-            <label key={option.kind} className="group flex min-h-[96px] cursor-pointer flex-col justify-between rounded-[18px] border border-[#dfe5eb] bg-white p-3 text-left transition duration-150 ease-out hover:-translate-y-0.5 hover:border-[#0064e0] hover:shadow-[0_8px_18px_rgba(10,19,23,.08)] active:scale-[.98] motion-reduce:transform-none motion-reduce:transition-none">
+            <label key={option.kind} className={`group flex min-h-[96px] flex-col justify-between rounded-[18px] border border-[#dfe5eb] bg-white p-3 text-left transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-none ${disabled ? "cursor-not-allowed opacity-55" : "cursor-pointer hover:-translate-y-0.5 hover:border-[#0064e0] hover:shadow-[0_8px_18px_rgba(10,19,23,.08)] active:scale-[.98]"}`}>
               <span className="grid h-8 w-8 place-items-center rounded-full bg-[#f1f4f7] text-[#0064e0] group-hover:bg-[#e5f0ff]"><Icon className="h-4 w-4" /></span>
               <span><span className="block text-xs font-bold text-[#0a1317]">{option.label}</span><span className="mt-0.5 block text-[11px] leading-4 text-[#5d6c7b]">{option.detail}</span></span>
-              <input className="sr-only" type="file" accept={option.accept} capture={option.capture} onChange={(event) => onChoose(event.target.files?.[0] ?? null)} />
+              <input className="sr-only" type="file" accept={option.accept} capture={option.capture} disabled={disabled} onChange={(event) => onChoose(event.target.files?.[0] ?? null)} />
             </label>
           );
         })}

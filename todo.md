@@ -183,3 +183,7 @@
 - [x] Implement original issue-detail, report/review/confirm, locality discovery, action-center, profile, and onboarding workflows with each visible action connected to real data, a controlled test state, or truthful availability feedback.
 - [x] Add accessible control coverage so buttons and navigation on the Firebase workspace either execute a defined workflow or provide an explicit unavailable-state response.
 - [ ] Publish the reviewed Firestore rules and indexes, verify whether Firebase Storage is provisioned before policy publication, authorize the teammate Vercel domain for Google Sign-In, deploy audited source, and complete live Firebase E2E verification.
+- [x] Add original modern civic motion for view changes, back navigation, cards, staged report review, and lifecycle progression, respecting reduced-motion preferences.
+- [x] Add responsive skeleton-loading states for Firebase sign-in restoration, feed, profile, map, report review, and action views.
+- [x] Audit and correct client privacy presentation so private reports, evidence-storage unavailability, identity, test data, and AI-assist boundaries are visible and not misleading.
+- [x] Replace paid-map dependence with a free interactive civic-map implementation and truthful location fallback, without enabling Google Maps billing or fabricating geographic reports.

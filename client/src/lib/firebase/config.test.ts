@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getFirebaseEnvironmentLabel, getFirebaseWebConfig } from "./config";
+import { getFirebaseEnvironmentLabel, getFirebaseWebConfig, isFirebaseEvidenceUploadsEnabled } from "./config";
 
 const completeEnvironment = {
   VITE_FIREBASE_API_KEY: "web-api-key",
@@ -36,5 +36,11 @@ describe("Firebase free-stage configuration", () => {
     expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "test" })).toBe("test");
     expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "preview" })).toBe("preview");
     expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "staging" })).toBe("production");
+  });
+
+  it("keeps Firebase evidence uploads off unless an explicit reviewed environment gate is enabled", () => {
+    expect(isFirebaseEvidenceUploadsEnabled({})).toBe(false);
+    expect(isFirebaseEvidenceUploadsEnabled({ VITE_JANANITI_EVIDENCE_UPLOADS_ENABLED: "false" })).toBe(false);
+    expect(isFirebaseEvidenceUploadsEnabled({ VITE_JANANITI_EVIDENCE_UPLOADS_ENABLED: "true" })).toBe(true);
   });
 });

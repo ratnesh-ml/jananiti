@@ -56,3 +56,11 @@ export function getFirebaseEnvironmentLabel(env: Record<string, string | undefin
   const configured = env.VITE_JANANITI_ENV?.trim().toLowerCase();
   return configured === "test" || configured === "preview" ? configured : "production";
 }
+
+/**
+ * Storage is deliberately opt-in. A configured browser storage bucket is not
+ * evidence that its billing, security rules, and retention review are ready.
+ */
+export function isFirebaseEvidenceUploadsEnabled(env: Record<string, string | undefined> = import.meta.env) {
+  return env.VITE_JANANITI_EVIDENCE_UPLOADS_ENABLED?.trim().toLowerCase() === "true";
+}

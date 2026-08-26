@@ -179,6 +179,34 @@
 }
 
 @layer utilities {
+  @keyframes civic-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes civic-shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+  }
+
+  @keyframes civic-current-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 100, 224, .25); }
+    55% { box-shadow: 0 0 0 6px rgba(0, 100, 224, 0); }
+  }
+
+  .civic-route-enter { animation: civic-rise 260ms cubic-bezier(.23, 1, .32, 1) both; }
+  .civic-card { transition: transform 160ms cubic-bezier(.23, 1, .32, 1), box-shadow 160ms cubic-bezier(.23, 1, .32, 1), border-color 160ms cubic-bezier(.23, 1, .32, 1); }
+  .civic-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(21, 43, 62, .08); }
+  .civic-card:active { transform: scale(.985); }
+  .civic-skeleton { background-image: linear-gradient(100deg, #edf1f5 35%, #f8fafc 50%, #edf1f5 65%); background-size: 200% 100%; animation: civic-shimmer 1.2s linear infinite; }
+  .civic-timeline-step { animation: civic-rise 240ms cubic-bezier(.23, 1, .32, 1) both; }
+  .civic-timeline-current { animation: civic-current-pulse 1.8s cubic-bezier(.23, 1, .32, 1) infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .civic-route-enter, .civic-timeline-step, .civic-skeleton, .civic-timeline-current { animation: none; }
+    .civic-card, .civic-card:hover, .civic-card:active { transform: none; transition: none; }
+  }
+
   @media (max-width: 1023px) {
     .container > .grid > section {
       min-width: 0;

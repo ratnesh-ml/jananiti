@@ -24,6 +24,7 @@ export default defineConfig({
       "client/src/lib/drfiTriage.test.ts",
       "client/src/lib/firebaseWorkspacePresentation.test.ts",
       "client/src/components/EvidencePicker.test.ts",
+      "client/src/components/CivicMap.test.ts",
     ],
   },
 });
