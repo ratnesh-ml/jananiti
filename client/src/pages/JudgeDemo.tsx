@@ -1,39 +1,53 @@
 import { useMemo, useState } from "react";
 import {
   BadgeCheck,
+  Bell,
   CheckCircle2,
+  ChevronLeft,
   ChevronRight,
   CircleGauge,
+  Compass,
   FilePlus2,
+  Heart,
+  LockKeyhole,
   MapPinned,
+  MessageCircle,
+  Plus,
   RefreshCcw,
+  Search,
   Send,
   ShieldCheck,
+  ThumbsDown,
+  UserRound,
   UsersRound,
 } from "lucide-react";
+import CivicMap from "@/components/CivicMap";
+import EvidencePicker from "@/components/EvidencePicker";
 import {
+  appendDemoComment,
+  buildQaWalkthroughIssue,
   calculateDemoDrfi,
+  canMapDemoIssue,
+  createDemoIssue,
   defaultDemoFactors,
   demoStatusLabels,
+  demoStatusSequence,
   drfiFactorDefinitions,
   nextDemoStatus,
+  recordDemoVerification,
+  toggleDemoReaction,
   type DemoDrfiFactors,
-  type DemoStatus,
+  type DemoIssue,
+  type DemoIssueDraft,
+  type DemoReaction,
+  type DemoVerification,
 } from "@/lib/browserLocalDemo";
-import EvidencePicker from "@/components/EvidencePicker";
 
-type DemoIssue = {
-  title: string;
-  category: string;
-  locality: string;
-  visibility: "public" | "private";
-  status: DemoStatus;
-  evidenceName?: string;
-};
-
-type VerificationChoice = "confirm" | "dispute" | "unable_to_verify" | null;
+type DemoView = "home" | "report" | "review" | "explore" | "activity" | "profile" | "detail";
+type DemoActivity = { id: number; detail: string };
 
 const categoryOptions = ["Waste & sanitation", "Water", "Road safety", "Streetlight", "Other"];
+const emptyDraft: DemoIssueDraft = { title: "", description: "", category: categoryOptions[0], locality: "", visibility: "public" };
 
 function scoreTone(tone: ReturnType<typeof calculateDemoDrfi>["tone"]) {
   return {
@@ -44,105 +58,91 @@ function scoreTone(tone: ReturnType<typeof calculateDemoDrfi>["tone"]) {
   }[tone];
 }
 
+function visibilityCopy(visibility: DemoIssueDraft["visibility"]) {
+  return visibility === "public"
+    ? "Community-visible in this browser-local showcase. Social and verification controls are enabled."
+    : "Visible only in this local demo session. Community actions are intentionally unavailable.";
+}
+
+function verificationLabel(choice: DemoVerification) {
+  if (!choice) return "Choose one response";
+  return choice === "confirm" ? "Confirmed" : choice === "dispute" ? "Disputed" : "Unable to verify";
+}
+
+function IssueTimeline({ issue, advance }: { issue: DemoIssue; advance: () => void }) {
+  const next = nextDemoStatus(issue.status);
+  const currentIndex = demoStatusSequence.indexOf(issue.status);
+  return <section className="rounded-[20px] border border-[#dfe7ef] bg-[#fbfcfd] p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Complaint journey</p><p className="mt-1 text-sm font-bold text-[#102a43]">Current: {demoStatusLabels[issue.status]}</p></div>{next ? <button onClick={advance} className="inline-flex items-center gap-1 rounded-xl bg-[#173a59] px-3 py-2 text-xs font-extrabold text-white transition hover:bg-[#0d2a43] active:scale-[.98]"><span>Demo coordinator: {demoStatusLabels[next]}</span><ChevronRight className="h-4 w-4" /></button> : <span className="inline-flex items-center gap-1 rounded-xl bg-[#e7f8ef] px-3 py-2 text-xs font-extrabold text-[#0d6040]"><BadgeCheck className="h-4 w-4" />Local demo resolved</span>}</div><div className="mt-4 grid gap-2 sm:grid-cols-5">{demoStatusSequence.map((status, index) => <div key={status} className={`rounded-xl border p-2.5 text-center ${index < currentIndex ? "border-[#b8e3ce] bg-[#f0fbf5] text-[#176c49]" : index === currentIndex ? "border-[#94bce8] bg-[#edf6ff] text-[#075eb7]" : "border-[#e1e8ee] bg-white text-[#6d7f90]"}`}><div className="mx-auto grid h-6 w-6 place-items-center rounded-full bg-white text-[11px] font-black shadow-sm">{index + 1}</div><p className="mt-1.5 text-[11px] font-extrabold leading-4">{demoStatusLabels[status]}</p></div>)}</div><p className="mt-3 text-xs leading-5 text-[#5d6c7b]">Lifecycle advancement is a browser-local coordinator simulation. It does not assign an authority or change a real service record.</p></section>;
+}
+
+function DrfiPanel({ factors, setFactors }: { factors: DemoDrfiFactors; setFactors: (value: DemoDrfiFactors) => void }) {
+  const priority = useMemo(() => calculateDemoDrfi(factors), [factors]);
+  return <section className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm sm:p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><CircleGauge className="h-5 w-5" /></span><div><h2 className="font-black text-[#102a43]">Explainable DRFI</h2><p className="text-xs leading-5 text-[#58728a]">Eight local inputs calculate transparent priority context. Social actions and AI never change this score.</p></div></div><span className={`rounded-full border px-3 py-2 text-sm font-black ${scoreTone(priority.tone)}`}>{priority.score}/100 · {priority.band}</span></div><div className="mt-5 grid gap-x-6 gap-y-4 md:grid-cols-2">{drfiFactorDefinitions.map((factor) => <label key={factor.key} className="grid gap-1.5"><span className="flex items-center justify-between text-xs font-bold text-[#3f5f7d]"><span>{factor.label} <span className="font-normal text-[#6c859c]">× {factor.weight.toFixed(2)}</span></span><span>{factors[factor.key]}</span></span><input type="range" min="0" max="100" value={factors[factor.key]} onChange={(event) => setFactors({ ...factors, [factor.key]: Number(event.target.value) })} className="accent-[#075eb7]" /></label>)}</div><p className="mt-4 rounded-xl bg-[#f6f9fc] px-3 py-2 text-xs leading-5 text-[#526171]"><strong>Demo recommendation:</strong> {priority.band} civic queue. A protected human review is still required; this browser-local calculation cannot route, verify, assign, moderate, or resolve a live record.</p></section>;
+}
+
 export default function JudgeDemo({ variant = "judge" }: { variant?: "judge" | "team" }) {
   const isTeamWorkspace = variant === "team";
-  const [draft, setDraft] = useState<{ title: string; category: string; locality: string; visibility: "public" | "private" }>({ title: "", category: categoryOptions[0], locality: "", visibility: "public" });
-  const [issue, setIssue] = useState<DemoIssue | null>(null);
-  const [choice, setChoice] = useState<VerificationChoice>(null);
+  const [view, setView] = useState<DemoView>("home");
+  const [draft, setDraft] = useState<DemoIssueDraft>(emptyDraft);
   const [evidence, setEvidence] = useState<File | null>(null);
+  const [issues, setIssues] = useState<DemoIssue[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [comment, setComment] = useState("");
   const [factors, setFactors] = useState<DemoDrfiFactors>(defaultDemoFactors);
-  const priority = useMemo(() => calculateDemoDrfi(factors), [factors]);
-  const canCreate = draft.title.trim().length >= 8 && draft.locality.trim().length >= 2;
-  const followingStatus = issue ? nextDemoStatus(issue.status) : null;
+  const [activities, setActivities] = useState<DemoActivity[]>([]);
+  const [mapNotice, setMapNotice] = useState("");
 
-  const reset = () => {
-    setDraft({ title: "", category: categoryOptions[0], locality: "", visibility: "public" });
-    setIssue(null);
-    setChoice(null);
+  const selectedIssue = issues.find((issue) => issue.id === selectedId) ?? null;
+  const canReview = draft.title.trim().length >= 8 && draft.description.trim().length >= 12 && draft.locality.trim().length >= 2;
+  const addActivity = (detail: string) => setActivities((items) => [{ id: Date.now() + items.length, detail }, ...items]);
+  const openIssue = (issue: DemoIssue) => { setSelectedId(issue.id); setView("detail"); };
+  const changeIssue = (id: string, update: (issue: DemoIssue) => DemoIssue) => setIssues((items) => items.map((issue) => issue.id === id ? update(issue) : issue));
+
+  const submitDraft = () => {
+    const issue = createDemoIssue({ ...draft, evidenceName: evidence?.name }, Date.now() + issues.length);
+    setIssues((items) => [issue, ...items]);
+    setSelectedId(issue.id);
+    setDraft(emptyDraft);
     setEvidence(null);
-    setFactors(defaultDemoFactors);
+    addActivity(`Created a ${issue.visibility} browser-local report: ${issue.title}.`);
+    setView("detail");
   };
 
-  return (
-    <main className="min-h-screen bg-[#f6f8fb] px-4 py-6 text-[#102a43] sm:px-8 sm:py-10">
-      <section className="mx-auto max-w-5xl">
-        <div className="rounded-[2rem] bg-[#0c3f78] px-6 py-9 text-white shadow-xl sm:px-10">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#a9daf9]">{isTeamWorkspace ? "JanaNiti · Team workspace" : "Code for Communities 2 · Interactive judge demo"}</p>
-          <h1 className="mt-3 max-w-3xl text-3xl font-black leading-tight sm:text-5xl">{isTeamWorkspace ? "A shareable civic workspace your team can use together." : "From a local observation to accountable civic action."}</h1>
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-[#d6ecff] sm:text-base">{isTeamWorkspace ? "Use the working report, community validation, deterministic DRFI, and coordinator workflow sandbox to explain the full JanaNiti product journey to teammates." : "Create one browser-local civic record, validate it, tune all eight explainable DRFI inputs, and move it through an accountable coordinator flow."}</p>
-          <div className="mt-6 flex flex-wrap gap-3 text-xs font-bold">
-            <span className="rounded-full bg-white/15 px-3 py-2">{isTeamWorkspace ? "Team-ready sandbox" : "No sign-in"}</span>
-            <span className="rounded-full bg-white/15 px-3 py-2">No server calls</span>
-            <span className="rounded-full bg-white/15 px-3 py-2">Resets on refresh</span>
-            <span className="rounded-full bg-white/15 px-3 py-2">Explainable DRFI</span>
-          </div>
-        </div>
+  const loadQaWalkthrough = () => {
+    const issue = buildQaWalkthroughIssue(Date.now() + issues.length);
+    setIssues((items) => [issue, ...items]);
+    setSelectedId(issue.id);
+    addActivity("Loaded one browser-local QA walkthrough item. It is not a civic claim.");
+  };
 
-        <div className="mt-6 rounded-[1.4rem] border border-[#d5e3f0] bg-white p-5 shadow-sm">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#15935d]" />
-            <p className="text-sm leading-6 text-[#55708a]"><strong className="text-[#173a59]">Judge-safe local demo.</strong> This is an interactive browser-local demonstration, not a live government service. It does not store submissions, show fabricated residents, or claim a live Firestore, Maps, AI, or coordinator integration.</p>
-          </div>
-        </div>
+  const reset = () => {
+    setView("home"); setDraft(emptyDraft); setEvidence(null); setIssues([]); setSelectedId(null); setComment(""); setFactors(defaultDemoFactors); setActivities([]); setMapNotice("");
+  };
 
-        <div className="mt-7 grid gap-5 lg:grid-cols-[1fr_1.15fr]">
-          <section className="rounded-[1.6rem] border border-[#dce7f1] bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><FilePlus2 className="h-5 w-5" /></span><div><h2 className="font-black">1. Create a civic report</h2><p className="text-xs text-[#58728a]">The record exists only in this browser tab.</p></div></div>
-            <div className="mt-5 grid gap-3">
-              <label className="grid gap-1 text-xs font-bold text-[#3f5f7d]">Issue title
-                <input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="e.g., Drain overflow near bus stop" className="rounded-xl border border-[#cdddea] bg-white px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2" />
-              </label>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <label className="grid gap-1 text-xs font-bold text-[#3f5f7d]">Category
-                  <select value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })} className="rounded-xl border border-[#cdddea] bg-white px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2">
-                    {categoryOptions.map((option) => <option key={option}>{option}</option>)}
-                  </select>
-                </label>
-                <label className="grid gap-1 text-xs font-bold text-[#3f5f7d]">Visibility
-                  <select value={draft.visibility} onChange={(event) => setDraft({ ...draft, visibility: event.target.value as "public" | "private" })} className="rounded-xl border border-[#cdddea] bg-white px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2">
-                    <option value="public">Public community record</option>
-                    <option value="private">Private reporter record</option>
-                  </select>
-                </label>
-              </div>
-              <label className="grid gap-1 text-xs font-bold text-[#3f5f7d]">Locality or ward
-                <input value={draft.locality} onChange={(event) => setDraft({ ...draft, locality: event.target.value })} placeholder="e.g., Ward 12" className="rounded-xl border border-[#cdddea] bg-white px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2" />
-              </label>
-              <EvidencePicker file={evidence} onChoose={setEvidence} onRemove={() => setEvidence(null)} maxSizeLabel="Local only" />
-              <button disabled={!canCreate} onClick={() => { setIssue({ ...draft, title: draft.title.trim(), locality: draft.locality.trim(), status: "submitted", evidenceName: evidence?.name }); setChoice(null); }} className="mt-1 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0064e0] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#0457cb] active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none"><Send className="h-4 w-4" />Create local demo record</button>
-            </div>
-          </section>
+  const navigation: Array<{ key: DemoView; label: string; icon: typeof Compass }> = [
+    { key: "home", label: "Home", icon: Compass },
+    { key: "explore", label: "Explore", icon: MapPinned },
+    { key: "report", label: "Report", icon: Plus },
+    { key: "activity", label: "Activity", icon: Bell },
+    { key: "profile", label: "Profile", icon: UserRound },
+  ];
 
-          <section className="rounded-[1.6rem] border border-[#dce7f1] bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><UsersRound className="h-5 w-5" /></span><div><h2 className="font-black">2. Community and coordinator flow</h2><p className="text-xs text-[#58728a]">Available after creating a browser-local record.</p></div></div>
-            {!issue ? <div className="mt-6 rounded-2xl border border-dashed border-[#cdddea] bg-[#f8fbff] p-6 text-center text-sm text-[#627f98]">Create a record to unlock one local verification response and the lifecycle demonstration.</div> : <div className="mt-5">
-              <div className="rounded-2xl bg-[#f8fbff] p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2"><span className="rounded-full bg-[#e5f2ff] px-2.5 py-1 text-xs font-extrabold text-[#075eb7]">{issue.category}</span><span className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-[#496882]">{issue.visibility === "public" ? "Public" : "Private"} · {issue.locality}</span></div>
-                <h3 className="mt-3 font-black text-[#163956]">{issue.title}</h3>
-                <p className="mt-1 text-sm text-[#55708a]">Current state: <strong>{demoStatusLabels[issue.status]}</strong></p>
-                {issue.evidenceName && <p className="mt-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-[#496882]">Evidence selected locally: {issue.evidenceName}</p>}
-              </div>
-              <div className="mt-4"><p className="text-xs font-extrabold uppercase tracking-wide text-[#58728a]">Your one browser-local verification</p><div className="mt-2 grid gap-2 sm:grid-cols-3">
-                {(["confirm", "dispute", "unable_to_verify"] as const).map((response) => <button key={response} disabled={choice !== null} onClick={() => setChoice(response)} className={`rounded-xl border px-3 py-2.5 text-xs font-extrabold transition ${choice === response ? "border-[#075eb7] bg-[#e9f3ff] text-[#075eb7]" : "border-[#cdddea] bg-white text-[#486780] hover:border-[#75aee5]"} disabled:cursor-not-allowed disabled:opacity-70`}>{response === "confirm" ? "Confirm" : response === "dispute" ? "Dispute" : "Unable to verify"}</button>)}
-              </div>{choice && <p className="mt-2 text-xs font-bold text-[#15935d]">One response recorded for this browser session: {choice.replaceAll("_", " ")}.</p>}</div>
-              <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-[#d7e6f3] p-3"><div><p className="text-xs font-extrabold uppercase tracking-wide text-[#58728a]">Coordinator lifecycle</p><p className="text-sm font-bold text-[#173a59]">{demoStatusLabels[issue.status]}</p></div>{followingStatus ? <button onClick={() => setIssue({ ...issue, status: followingStatus })} className="inline-flex items-center gap-1 rounded-xl bg-[#173a59] px-3 py-2 text-xs font-extrabold text-white">Advance to {demoStatusLabels[followingStatus]}<ChevronRight className="h-4 w-4" /></button> : <span className="inline-flex items-center gap-1 text-xs font-extrabold text-[#15935d]"><BadgeCheck className="h-4 w-4" />Resolved</span>}</div>
-            </div>}
-          </section>
-        </div>
+  const issueCard = (issue: DemoIssue, compact = false) => <article key={issue.id} className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm"><div className="flex flex-wrap items-start justify-between gap-2"><div className="flex flex-wrap gap-2"><span className="rounded-full bg-[#eaf3ff] px-2.5 py-1 text-[11px] font-extrabold text-[#075eb7]">{issue.category}</span><span className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold ${issue.visibility === "public" ? "bg-[#e9f8ef] text-[#126b46]" : "bg-[#f0f2f5] text-[#566575]"}`}>{issue.visibility === "public" ? "Community visible" : "Private to this demo session"}</span></div><span className="text-[11px] font-bold text-[#5d6c7b]">{demoStatusLabels[issue.status]}</span></div><button onClick={() => openIssue(issue)} className="mt-3 text-left"><h3 className="font-black text-[#102a43] transition hover:text-[#0064e0]">{issue.title}</h3><p className="mt-1 text-xs font-bold text-[#58728a]">{issue.locality}</p></button><p className="mt-3 text-sm leading-6 text-[#526171]">{issue.description}</p>{issue.evidenceName && <p className="mt-3 rounded-xl bg-[#f5f8fb] px-3 py-2 text-xs font-bold text-[#526171]">Selected only in this browser: {issue.evidenceName}</p>}{!compact && issue.visibility === "public" && <div className="mt-4 border-t border-[#edf1f5] pt-3"><div className="flex flex-wrap gap-2"><button onClick={() => { changeIssue(issue.id, (current) => toggleDemoReaction(current, "support")); addActivity(`${issue.reaction === "support" ? "Cleared" : "Supported"} the browser-local QA item.`); }} className={`inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-xs font-extrabold ${issue.reaction === "support" ? "border-[#9ed9bc] bg-[#ebfaef] text-[#176c49]" : "border-[#dce6ef] text-[#4e667d]"}`}><Heart className="h-3.5 w-3.5" />{issue.reaction === "support" ? "Supported" : "Support"}</button><button onClick={() => { changeIssue(issue.id, (current) => toggleDemoReaction(current, "concern")); addActivity(`${issue.reaction === "concern" ? "Cleared" : "Marked concern on"} the browser-local QA item.`); }} className={`inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-xs font-extrabold ${issue.reaction === "concern" ? "border-[#f1c2aa] bg-[#fff4ed] text-[#a44b1f]" : "border-[#dce6ef] text-[#4e667d]"}`}><ThumbsDown className="h-3.5 w-3.5" />{issue.reaction === "concern" ? "Concern noted" : "Concern"}</button><button onClick={() => openIssue(issue)} className="inline-flex items-center gap-1 rounded-xl border border-[#dce6ef] px-3 py-2 text-xs font-extrabold text-[#4e667d]"><MessageCircle className="h-3.5 w-3.5" />{issue.comments.length} comments</button></div></div>}{!compact && issue.visibility === "private" && <p className="mt-4 rounded-xl bg-[#f5f7f9] px-3 py-2 text-xs leading-5 text-[#586979]"><LockKeyhole className="mr-1 inline h-3.5 w-3.5" />Private reports intentionally do not expose local reactions, comments, or verification controls.</p>}</article>;
 
-        <section className="mt-7 rounded-[1.6rem] border border-[#dce7f1] bg-white p-5 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-3"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><CircleGauge className="h-5 w-5" /></span><div><h2 className="font-black">3. Tune explainable DRFI inputs</h2><p className="text-xs text-[#58728a]">Eight editable inputs use the documented deterministic weights. This is a demonstration calculation, not a live civic decision.</p></div></div><span className={`rounded-full border px-3 py-2 text-sm font-black ${scoreTone(priority.tone)}`}>{priority.score}/100 · {priority.band}</span></div>
-          <div className="mt-5 grid gap-x-6 gap-y-4 md:grid-cols-2">
-            {drfiFactorDefinitions.map((factor) => <label key={factor.key} className="grid gap-1.5"><span className="flex items-center justify-between text-xs font-bold text-[#3f5f7d]"><span>{factor.label} <span className="font-normal text-[#6c859c]">× {factor.weight.toFixed(2)}</span></span><span>{factors[factor.key]}</span></span><input type="range" min="0" max="100" value={factors[factor.key]} onChange={(event) => setFactors({ ...factors, [factor.key]: Number(event.target.value) })} className="accent-[#075eb7]" /></label>)}
-          </div>
-        </section>
+  return <main className="min-h-screen bg-[#f4f7fb] pb-24 text-[#102a43] sm:pb-8"><section className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-7"><header className="civic-route-enter rounded-[26px] bg-[#0c3f78] px-5 py-5 text-white shadow-xl sm:px-8"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#a9daf9]">{isTeamWorkspace ? "JanaNiti · team workspace" : "JanaNiti · complete Vercel showcase"}</p><h1 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-4xl">A complete civic workflow, safely demonstrated.</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#d6ecff]">Create public or private browser-local reports, review them, discuss public items, record one verification, explore map privacy, inspect activity and profile context, and tune deterministic DRFI.</p></div><button onClick={reset} className="inline-flex items-center gap-2 rounded-xl bg-white/12 px-3 py-2 text-xs font-extrabold text-white transition hover:bg-white/20 active:scale-[.98]"><RefreshCcw className="h-4 w-4" />Reset demo</button></div><div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold"><span className="rounded-full bg-white/15 px-3 py-1.5">No sign-in</span><span className="rounded-full bg-white/15 px-3 py-1.5">No server writes</span><span className="rounded-full bg-white/15 px-3 py-1.5">Resets on refresh</span><span className="rounded-full bg-white/15 px-3 py-1.5">Demo data is labelled</span></div></header><section className="mt-4 rounded-[20px] border border-[#cce1f1] bg-white p-4 shadow-sm"><div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#15935d]" /><p className="text-sm leading-6 text-[#526f89]"><strong className="text-[#173a59]">Safe demonstration boundary.</strong> This public Vercel route runs entirely in the browser. It never creates live civic records, uploads evidence, requests location, sends notifications, or impersonates an authority. The separate <a className="font-bold text-[#0064e0] underline" href="https://jananiti-team.vercel.app">Firebase teammate workspace</a> remains the live authenticated path.</p></div></section><nav className="mt-4 flex gap-2 overflow-x-auto rounded-2xl bg-white p-2 shadow-sm" aria-label="Demo navigation">{navigation.map(({ key, label, icon: Icon }) => <button key={key} onClick={() => setView(key)} className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-extrabold transition ${view === key ? "bg-[#0064e0] text-white shadow-sm" : "text-[#4b6883] hover:bg-[#eef5fb]"}`}><Icon className="h-4 w-4" />{label}</button>)}</nav>
 
-        <section className="mt-7 flex flex-col gap-4 rounded-[1.6rem] border border-[#d3ede1] bg-[#f1fbf6] p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3"><MapPinned className="mt-0.5 h-5 w-5 shrink-0 text-[#0d6040]" /><p className="text-sm leading-6 text-[#356a55]"><strong>Privacy boundary:</strong> this Vercel demo does not request a device location, render a real map, notify people, or save any data. Refreshing the page clears the browser-local record.</p></div>
-          <button onClick={reset} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[#a9dcca] bg-white px-4 py-3 text-sm font-extrabold text-[#0d6040] hover:bg-[#e7f8ef]"><RefreshCcw className="h-4 w-4" />Reset demo</button>
-        </section>
-        <div className="mt-6 flex items-center justify-center gap-2 text-xs font-bold text-[#69839a]"><CheckCircle2 className="h-4 w-4 text-[#15935d]" />Built for public evaluation without a login or private data.</div>
-      </section>
-    </main>
-  );
+  {view === "home" && <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_360px]"><section><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-[11px] font-extrabold uppercase tracking-[.16em] text-[#0064e0]">For you</p><h2 className="mt-1 text-xl font-black">Local civic feed</h2></div><button onClick={() => setView("report")} className="inline-flex items-center gap-2 rounded-xl bg-[#0064e0] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[#0457cb] active:scale-[.98]"><Plus className="h-4 w-4" />Create report</button></div>{issues.length ? <div className="mt-4 grid gap-4">{issues.map((issue) => issueCard(issue))}</div> : <div className="mt-4 rounded-[24px] border border-dashed border-[#bcd0e1] bg-white p-6 text-center shadow-sm"><FilePlus2 className="mx-auto h-9 w-9 text-[#0064e0]" /><h3 className="mt-3 font-black">Start with a report or safe QA walkthrough</h3><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#5d6c7b]">No public record is fabricated here. You can create your own browser-local public or private item, or load one explicitly labelled QA-only walkthrough item.</p><div className="mt-4 flex flex-wrap justify-center gap-2"><button onClick={() => setView("report")} className="rounded-xl bg-[#0064e0] px-4 py-2.5 text-sm font-extrabold text-white">Create local report</button><button onClick={loadQaWalkthrough} className="rounded-xl border border-[#bfd3e5] bg-white px-4 py-2.5 text-sm font-extrabold text-[#17405f]">Load QA walkthrough</button></div></div>}</section><aside className="space-y-4"><section className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm"><div className="flex items-center gap-2"><Search className="h-4 w-4 text-[#0064e0]" /><h3 className="font-black">What this demonstrates</h3></div><ul className="mt-3 grid gap-2 text-sm leading-5 text-[#526171]"><li>• Public versus private visibility before review.</li><li>• Social signals separate from verification.</li><li>• One local verification response per item.</li><li>• Clear lifecycle and DRFI boundaries.</li></ul></section><DrfiPanel factors={factors} setFactors={setFactors} /></aside></div>}
+
+  {view === "report" && <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]"><section className="rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><FilePlus2 className="h-5 w-5" /></span><div><p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Report</p><h2 className="font-black">Draft, choose visibility, then review</h2></div></div><div className="mt-5 grid gap-4"><label className="grid gap-1.5 text-xs font-bold text-[#3f5f7d]">Issue title<input value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} placeholder="e.g., Demo walkway obstruction" className="rounded-xl border border-[#cdddea] px-3 py-3 text-sm outline-none ring-[#075eb7] focus:ring-2" /></label><label className="grid gap-1.5 text-xs font-bold text-[#3f5f7d]">What is happening?<textarea value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} placeholder="Describe the demo-only observation. Do not enter a real address, identity, or sensitive data." rows={4} className="rounded-xl border border-[#cdddea] px-3 py-3 text-sm outline-none ring-[#075eb7] focus:ring-2" /></label><div className="grid gap-4 sm:grid-cols-2"><label className="grid gap-1.5 text-xs font-bold text-[#3f5f7d]">Category<select value={draft.category} onChange={(event) => setDraft({ ...draft, category: event.target.value })} className="rounded-xl border border-[#cdddea] bg-white px-3 py-3 text-sm outline-none ring-[#075eb7] focus:ring-2">{categoryOptions.map((option) => <option key={option}>{option}</option>)}</select></label><label className="grid gap-1.5 text-xs font-bold text-[#3f5f7d]">Locality or ward<input value={draft.locality} onChange={(event) => setDraft({ ...draft, locality: event.target.value })} placeholder="Demo locality only" className="rounded-xl border border-[#cdddea] px-3 py-3 text-sm outline-none ring-[#075eb7] focus:ring-2" /></label></div><div className="grid gap-3 sm:grid-cols-2"><button onClick={() => setDraft({ ...draft, visibility: "public" })} className={`rounded-2xl border p-4 text-left ${draft.visibility === "public" ? "border-[#5a9fe4] bg-[#edf6ff]" : "border-[#dce7f1] bg-white"}`}><UsersRound className="h-5 w-5 text-[#0064e0]" /><p className="mt-2 text-sm font-black">Publish to community</p><p className="mt-1 text-xs leading-5 text-[#58728a]">Enable local reactions, comments, and one verification response.</p></button><button onClick={() => setDraft({ ...draft, visibility: "private" })} className={`rounded-2xl border p-4 text-left ${draft.visibility === "private" ? "border-[#657889] bg-[#f3f6f8]" : "border-[#dce7f1] bg-white"}`}><LockKeyhole className="h-5 w-5 text-[#405364]" /><p className="mt-2 text-sm font-black">Keep it private</p><p className="mt-1 text-xs leading-5 text-[#58728a]">Keep it within this demo session; community controls are hidden.</p></button></div><EvidencePicker file={evidence} onChoose={setEvidence} onRemove={() => setEvidence(null)} maxSizeLabel="Browser only" /><p className="-mt-2 text-xs leading-5 text-[#5d6c7b]">A selected file remains only in this browser tab and is never uploaded or sent.</p><button disabled={!canReview} onClick={() => setView("review")} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#0064e0] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#0457cb] active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-40"><Send className="h-4 w-4" />Review local report</button></div></section><aside className="rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><h3 className="font-black">Visibility clarity</h3><p className="mt-3 text-sm leading-6 text-[#526171]">{visibilityCopy(draft.visibility)}</p><p className="mt-4 rounded-xl bg-[#f6f9fc] p-3 text-xs leading-5 text-[#526171]">This form is a complete browser-local demonstration. The live Firebase workspace uses a separate authenticated Firestore path.</p></aside></section>}
+
+  {view === "review" && <section className="mx-auto mt-5 max-w-3xl rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><button onClick={() => setView("report")} className="inline-flex items-center gap-1 text-xs font-extrabold text-[#0064e0]"><ChevronLeft className="h-4 w-4" />Edit draft</button><p className="mt-5 text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Review before local confirmation</p><h2 className="mt-1 text-2xl font-black">Confirm this browser-local record</h2><div className="mt-5 rounded-[20px] bg-[#f7fafc] p-4"><div className="flex flex-wrap justify-between gap-2"><span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-[#0064e0]">{draft.category}</span><span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-[#4e667d]">{draft.visibility === "public" ? "Public demo record" : "Private demo record"}</span></div><h3 className="mt-4 font-black">{draft.title || "Untitled report"}</h3><p className="mt-2 text-sm leading-6 text-[#526171]">{draft.description || "No description yet."}</p><p className="mt-3 text-xs font-bold text-[#58728a]">{draft.locality || "No locality"}</p>{evidence && <p className="mt-3 rounded-xl bg-white px-3 py-2 text-xs font-bold text-[#526171]">Browser-only selection: {evidence.name}</p>}</div><div className="mt-5 flex flex-wrap gap-3"><button onClick={submitDraft} disabled={!canReview} className="inline-flex items-center gap-2 rounded-xl bg-[#0064e0] px-4 py-3 text-sm font-extrabold text-white disabled:opacity-40"><CheckCircle2 className="h-4 w-4" />Confirm local record</button><button onClick={() => setView("report")} className="rounded-xl border border-[#cbdbe8] px-4 py-3 text-sm font-extrabold text-[#405a72]">Keep editing</button></div></section>}
+
+  {view === "explore" && <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]"><section><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><MapPinned className="h-5 w-5" /></span><div><p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Explore</p><h2 className="font-black">Map privacy in action</h2></div></div><CivicMap records={issues} onOpen={(record) => { const issue = issues.find((item) => item.id === record.id); if (issue) openIssue(issue); }} onNotice={setMapNotice} />{mapNotice && <p className="mt-3 rounded-xl border border-[#cfe0ed] bg-white px-3 py-2 text-xs leading-5 text-[#506c84]">{mapNotice}</p>}<div className="mt-4 grid gap-3">{issues.length ? issues.map((issue) => issueCard(issue, true)) : <div className="rounded-[22px] border border-dashed border-[#bdd0e0] bg-white p-5 text-sm leading-6 text-[#5d6c7b]">Create or load a browser-local item to inspect its accessible-record card. No map marker is created until a user voluntarily provides finite coordinates, which this safe demo intentionally does not do.</div>}</div></section><aside className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm"><h3 className="font-black">Why 0 mapped can be correct</h3><p className="mt-3 text-sm leading-6 text-[#526171]">{issues.filter(canMapDemoIssue).length} local records have voluntarily stored coordinates. This showcase leaves coordinates empty on purpose, so the interactive OpenStreetMap base map works without inventing a location.</p><p className="mt-4 text-xs leading-5 text-[#5d6c7b]">Map taps are orientation-only. The demo never saves them.</p></aside></section>}
+
+  {view === "activity" && <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]"><section className="rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><Bell className="h-5 w-5" /></span><div><p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Activity</p><h2 className="font-black">Your browser-local updates</h2></div></div>{activities.length ? <ol className="mt-5 grid gap-3">{activities.map((activity) => <li key={activity.id} className="rounded-2xl border border-[#e0e9f0] bg-[#fbfcfd] p-3 text-sm leading-6 text-[#506779]">{activity.detail}</li>)}</ol> : <p className="mt-5 rounded-2xl border border-dashed border-[#cbdbe7] bg-[#f9fbfd] p-5 text-sm leading-6 text-[#5d6c7b]">No local activity yet. Create a report, add a social action, select a verification response, or advance the browser-local lifecycle.</p>}</section><aside className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm"><h3 className="font-black">Notification boundary</h3><p className="mt-3 text-sm leading-6 text-[#526171]">This activity list is local UI state, not a push-notification service. FCM and real resident notifications remain deferred.</p></aside></section>}
+
+  {view === "profile" && <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]"><section className="rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><div className="flex items-center gap-3"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#e9f3ff] text-[#075eb7]"><UserRound className="h-6 w-6" /></span><div><p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#0064e0]">Profile</p><h2 className="font-black">Browser-local demo resident</h2><p className="text-xs text-[#5d6c7b]">No account, identity, or personal data is retained.</p></div></div><div className="mt-5 grid grid-cols-3 gap-3">{[["Accessible", issues.length], ["Public", issues.filter((issue) => issue.visibility === "public").length], ["Private", issues.filter((issue) => issue.visibility === "private").length]].map(([label, value]) => <div key={String(label)} className="rounded-2xl bg-[#f6f9fc] p-3 text-center"><p className="text-xl font-black text-[#102a43]">{value}</p><p className="mt-1 text-[11px] font-extrabold uppercase tracking-wide text-[#60778e]">{label}</p></div>)}</div><div className="mt-5"><h3 className="font-black">Your local records</h3><div className="mt-3 grid gap-3">{issues.length ? issues.map((issue) => issueCard(issue, true)) : <p className="rounded-2xl bg-[#f6f9fc] p-4 text-sm text-[#5d6c7b]">No browser-local reports yet.</p>}</div></div></section><aside className="rounded-[22px] border border-[#dce7f1] bg-white p-4 shadow-sm"><h3 className="font-black">Identity boundary</h3><p className="mt-3 text-sm leading-6 text-[#526171]">The showcase intentionally does not collect Aadhaar, phone number, email, exact address, or device location. The live Firebase path uses Google Sign-In separately.</p></aside></section>}
+
+  {view === "detail" && selectedIssue && <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]"><section><button onClick={() => setView("home")} className="inline-flex items-center gap-1 text-xs font-extrabold text-[#0064e0]"><ChevronLeft className="h-4 w-4" />Back to feed</button><article className="mt-3 rounded-[24px] border border-[#dce7f1] bg-white p-5 shadow-sm"><div className="flex flex-wrap justify-between gap-2"><span className="rounded-full bg-[#eaf3ff] px-3 py-1 text-xs font-extrabold text-[#075eb7]">{selectedIssue.category}</span><span className="rounded-full bg-[#f3f6f8] px-3 py-1 text-xs font-extrabold text-[#526171]">{selectedIssue.visibility === "public" ? "Public local demo" : "Private local demo"}</span></div><h2 className="mt-4 text-2xl font-black">{selectedIssue.title}</h2><p className="mt-2 text-sm font-bold text-[#58728a]">{selectedIssue.locality}</p><p className="mt-4 text-sm leading-7 text-[#526171]">{selectedIssue.description}</p>{selectedIssue.evidenceName && <p className="mt-4 rounded-xl bg-[#f6f9fc] px-3 py-2 text-xs font-bold text-[#526171]">Browser-only evidence selection: {selectedIssue.evidenceName}</p>}<div className="mt-5"><IssueTimeline issue={selectedIssue} advance={() => { const following = nextDemoStatus(selectedIssue.status); if (!following) return; changeIssue(selectedIssue.id, (issue) => ({ ...issue, status: following })); addActivity(`Advanced local lifecycle to ${demoStatusLabels[following]}.`); }} /></div>{selectedIssue.visibility === "public" ? <section className="mt-5 rounded-[20px] border border-[#dfe7ef] p-4"><div className="flex items-center gap-2"><UsersRound className="h-4 w-4 text-[#0064e0]" /><h3 className="font-black">Community actions</h3></div><p className="mt-2 text-xs leading-5 text-[#5d6c7b]">Local social and verification state is intentionally separate from DRFI and lifecycle decisions.</p><div className="mt-4 flex flex-wrap gap-2">{(["support", "concern"] as Exclude<DemoReaction, null>[]).map((reaction) => <button key={reaction} onClick={() => { changeIssue(selectedIssue.id, (issue) => toggleDemoReaction(issue, reaction)); addActivity(`${reaction === "support" ? "Supported" : "Marked concern on"} the local public record.`); }} className={`rounded-xl border px-3 py-2 text-xs font-extrabold ${selectedIssue.reaction === reaction ? "border-[#90c9ac] bg-[#eefaf2] text-[#176c49]" : "border-[#dce6ef] text-[#4e667d]"}`}>{reaction === "support" ? "Support" : "Concern"}</button>)}</div><div className="mt-4 border-t border-[#edf1f5] pt-4"><p className="text-xs font-extrabold uppercase tracking-wide text-[#5d6c7b]">One browser-local verification response</p><div className="mt-2 grid gap-2 sm:grid-cols-3">{(["confirm", "dispute", "unable_to_verify"] as Exclude<DemoVerification, null>[]).map((choice) => <button key={choice} disabled={selectedIssue.verification !== null} onClick={() => { changeIssue(selectedIssue.id, (issue) => recordDemoVerification(issue, choice)); addActivity(`Recorded one local verification response: ${verificationLabel(choice)}.`); }} className={`rounded-xl border px-3 py-2 text-xs font-extrabold ${selectedIssue.verification === choice ? "border-[#75aee5] bg-[#eaf4ff] text-[#075eb7]" : "border-[#dce6ef] text-[#4e667d]"} disabled:cursor-not-allowed disabled:opacity-70`}>{choice === "confirm" ? "Confirm" : choice === "dispute" ? "Dispute" : "Unable"}</button>)}</div><p className="mt-2 text-xs font-bold text-[#58728a]">{verificationLabel(selectedIssue.verification)}</p></div><div className="mt-4 border-t border-[#edf1f5] pt-4"><div className="flex gap-2"><input value={comment} onChange={(event) => setComment(event.target.value)} maxLength={280} placeholder="Add a constructive browser-local comment" className="min-w-0 flex-1 rounded-xl border border-[#cdddea] px-3 py-2.5 text-sm outline-none ring-[#075eb7] focus:ring-2" /><button onClick={() => { if (!comment.trim()) return; changeIssue(selectedIssue.id, (issue) => appendDemoComment(issue, comment)); addActivity("Added a local constructive comment."); setComment(""); }} className="rounded-xl bg-[#173a59] px-3 py-2 text-xs font-extrabold text-white"><Send className="h-4 w-4" /></button></div>{selectedIssue.comments.length > 0 && <div className="mt-3 grid gap-2">{selectedIssue.comments.map((item, index) => <p key={`${item}-${index}`} className="rounded-xl bg-[#f6f9fc] px-3 py-2 text-sm text-[#526171]">{item}</p>)}</div>}</div></section> : <p className="mt-5 rounded-[20px] bg-[#f5f7f9] p-4 text-sm leading-6 text-[#526171]"><LockKeyhole className="mr-1 inline h-4 w-4" />This local report is private. Reactions, comments, and verification are intentionally unavailable.</p>}</article></section><aside><DrfiPanel factors={factors} setFactors={setFactors} /></aside></section>}
+  </section><nav className="fixed inset-x-0 bottom-0 z-20 border-t border-[#dce7f1] bg-white/95 px-2 py-2 backdrop-blur sm:hidden" aria-label="Mobile demo navigation"><div className="mx-auto flex max-w-md justify-around">{navigation.map(({ key, label, icon: Icon }) => <button key={key} onClick={() => setView(key)} className={`grid min-w-12 place-items-center gap-0.5 rounded-xl px-2 py-1.5 text-[10px] font-extrabold ${view === key ? "text-[#0064e0]" : "text-[#637b91]"}`}><Icon className="h-4 w-4" />{label}</button>)}</div></nav></main>;
 }

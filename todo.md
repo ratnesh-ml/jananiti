@@ -184,6 +184,9 @@
 - [x] Add accessible control coverage so buttons and navigation on the Firebase workspace either execute a defined workflow or provide an explicit unavailable-state response.
 - [x] Publish the reviewed Firestore rules and indexes, verify whether Firebase Storage is provisioned before policy publication, authorize the teammate Vercel domain for Google Sign-In, deploy audited source, and complete an authorised live **public** Firebase E2E verification.
 - [ ] Complete a separately consented production private-report E2E verification, or configure an isolated Firebase test project for that scenario, without exposing the record publicly.
+- [x] Expand the public Vercel judge route into a clearly labelled browser-local full-workflow showcase covering public and private report creation, review/confirmation, timeline, separate social and verification actions, Explore/map privacy behavior, Activity, Profile, and deterministic DRFI without representing demo state as production civic data.
+- [ ] Repair any showcase build errors and verify the exact public Vercel judge route at 390px and desktop widths; do not use the managed `manus.space` preview as evidence of the Vercel deployment.
+- [ ] Audit and repair every visible normal-user control across the managed Firebase workspace and browser-local Vercel showcase, including functional civic-record search with clear no-result feedback, then publish both verified experiences.
 - [x] Add original modern civic motion for view changes, back navigation, cards, staged report review, and lifecycle progression, respecting reduced-motion preferences.
 - [x] Add responsive skeleton-loading states for Firebase sign-in restoration, feed, profile, map, report review, and action views.
 - [x] Audit and correct client privacy presentation so private reports, evidence-storage unavailability, identity, test data, and AI-assist boundaries are visible and not misleading.

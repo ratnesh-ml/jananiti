@@ -1,5 +1,9 @@
 export type DemoStatus = "submitted" | "acknowledged" | "assigned" | "in_progress" | "resolved";
 
+export type DemoVisibility = "public" | "private";
+export type DemoReaction = "support" | "concern" | null;
+export type DemoVerification = "confirm" | "dispute" | "unable_to_verify" | null;
+
 export type DemoDrfiFactors = {
   demand: number;
   populationImpact: number;
@@ -9,6 +13,27 @@ export type DemoDrfiFactors = {
   geospatialReality: number;
   trendGrowth: number;
   riskUrgency: number;
+};
+
+export type DemoIssue = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  locality: string;
+  visibility: DemoVisibility;
+  status: DemoStatus;
+  createdAt: number;
+  evidenceName?: string;
+  reaction: DemoReaction;
+  verification: DemoVerification;
+  comments: string[];
+  latitude: null;
+  longitude: null;
+};
+
+export type DemoIssueDraft = Pick<DemoIssue, "title" | "description" | "category" | "locality" | "visibility"> & {
+  evidenceName?: string;
 };
 
 export const defaultDemoFactors: DemoDrfiFactors = {
@@ -54,8 +79,55 @@ export const demoStatusLabels: Record<DemoStatus, string> = {
   resolved: "Resolved",
 };
 
+export const demoStatusSequence: DemoStatus[] = ["submitted", "acknowledged", "assigned", "in_progress", "resolved"];
+
 export function nextDemoStatus(status: DemoStatus): DemoStatus | null {
-  const sequence: DemoStatus[] = ["submitted", "acknowledged", "assigned", "in_progress", "resolved"];
-  const index = sequence.indexOf(status);
-  return index === sequence.length - 1 ? null : sequence[index + 1];
+  const index = demoStatusSequence.indexOf(status);
+  return index === demoStatusSequence.length - 1 ? null : demoStatusSequence[index + 1];
+}
+
+export function createDemoIssue(draft: DemoIssueDraft, timestamp = Date.now()): DemoIssue {
+  return {
+    id: `local-${timestamp}`,
+    title: draft.title.trim(),
+    description: draft.description.trim(),
+    category: draft.category,
+    locality: draft.locality.trim(),
+    visibility: draft.visibility,
+    status: "submitted",
+    createdAt: timestamp,
+    evidenceName: draft.evidenceName,
+    reaction: null,
+    verification: null,
+    comments: [],
+    latitude: null,
+    longitude: null,
+  };
+}
+
+export function buildQaWalkthroughIssue(timestamp = Date.now()): DemoIssue {
+  return createDemoIssue({
+    title: "Browser-local QA walkthrough — no civic claim",
+    description: "This carefully labelled browser-local walkthrough item demonstrates the report, discussion, verification, timeline, and privacy controls. It is not a report of a real civic condition.",
+    category: "Other",
+    locality: "Demo locality (non-geographic)",
+    visibility: "public",
+  }, timestamp);
+}
+
+export function toggleDemoReaction(issue: DemoIssue, reaction: Exclude<DemoReaction, null>): DemoIssue {
+  return { ...issue, reaction: issue.reaction === reaction ? null : reaction };
+}
+
+export function recordDemoVerification(issue: DemoIssue, verification: Exclude<DemoVerification, null>): DemoIssue {
+  return issue.verification ? issue : { ...issue, verification };
+}
+
+export function appendDemoComment(issue: DemoIssue, comment: string): DemoIssue {
+  const trimmed = comment.trim().slice(0, 280);
+  return trimmed ? { ...issue, comments: [...issue.comments, trimmed] } : issue;
+}
+
+export function canMapDemoIssue(issue: Pick<DemoIssue, "latitude" | "longitude">) {
+  return Number.isFinite(issue.latitude) && Number.isFinite(issue.longitude);
 }
