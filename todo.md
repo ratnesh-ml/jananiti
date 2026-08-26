@@ -189,6 +189,6 @@
 - [x] Replace paid-map dependence with a free interactive civic-map implementation and truthful location fallback, without enabling Google Maps billing or fabricating geographic reports.
 - [x] Refine the signed-in desktop Firebase workspace with an original denser civic-social feed hierarchy, compact interaction rhythm, contextual profile/activity surfaces, and responsive mobile preservation without copying third-party branded screens.
 - [x] Add an original desktop-only civic context rail with real account context, accessible-record state, and working shortcuts to Report, Explore, Activity, and Profile.
-- [ ] Write and publish a detailed Code for Communities hackathon README grounded in implemented features, verified Firebase/Vercel state, truthful limitation disclosure, tests, setup steps, and the live teammate Vercel link.
+- [x] Write and publish a detailed Code for Communities hackathon README grounded in implemented features, verified Firebase/Vercel state, truthful limitation disclosure, tests, setup steps, and the live teammate Vercel link.
 - [x] Expose the full authenticated JanaNiti civic-social flow—Home feed, issue detail, staged report, map/explore, activity, profile, and onboarding—with every control backed by real Firebase data, isolated test data, or explicit unavailable feedback.
 - [x] Ensure no authenticated-screen metric, validation percentage, authority assignment, AI decision, citizen identity, or civic-impact claim is presented as real unless it is persisted and authorized Firebase data.
