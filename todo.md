@@ -182,3 +182,4 @@
 - [x] Implement an original functional civic mobile shell with Home, Explore, Report, Activity, Profile, notifications, locality controls, and a visible active state.
 - [x] Implement original issue-detail, report/review/confirm, locality discovery, action-center, profile, and onboarding workflows with each visible action connected to real data, a controlled test state, or truthful availability feedback.
 - [x] Add accessible control coverage so buttons and navigation on the Firebase workspace either execute a defined workflow or provide an explicit unavailable-state response.
+- [ ] Publish the reviewed Firestore rules and indexes, verify whether Firebase Storage is provisioned before policy publication, authorize the teammate Vercel domain for Google Sign-In, deploy audited source, and complete live Firebase E2E verification.
