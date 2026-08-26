@@ -168,3 +168,7 @@
 - [ ] Implement only approved, testable social-workflow improvements and model integration boundaries after Firebase persistence and security rules are verified.
 - [ ] Compare and select an isolated temporary persistence option for JanaNiti end-to-end testing, with a seeded-test-data policy, cleanup path, no production credentials, and no impact on the public teammate host.
 - [x] Add tested Firebase client and Firestore-rule support for one account-scoped support/concern reaction and bounded top-level constructive comments, explicitly separate from true/not-true verification.
+- [x] Complete all locally implementable Firebase social-workflow, constrained AI-assist, isolated test-environment, Vercel deployment, test, and documentation code before requesting the final Firebase Console activation steps.
+- [x] Add an executable Firebase Emulator Suite rule test that verifies public/private report visibility, owner-bound report creation, account-scoped reactions, bounded comments, and one-response verification.
+- [x] Add a Gemma 3 270M non-decisional fine-tuning, serving, client-validation, and Vercel API-boundary scaffold that refuses to fabricate results until consented data, model assets, and evaluation are available.
+- [x] Add a credential-free separate-Firebase-project test-environment guide, test/preview labelling, composite-index manifest, and repository exclusions for source civic data and model artifacts.

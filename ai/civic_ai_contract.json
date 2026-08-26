@@ -1,0 +1,11 @@
+{
+  "task": "civic_draft_assist",
+  "allowedOutputs": {
+    "category": ["Waste & sanitation", "Water", "Road safety", "Streetlight", "Other"],
+    "summary": "string, maximum 500 characters",
+    "missingFields": "array of at most five strings",
+    "confidence": ["low", "medium", "high"]
+  },
+  "prohibitedOutputs": ["priority", "drfiScore", "verification", "status", "assignment", "moderationDecision"],
+  "humanControls": ["citizen may ignore or edit every suggestion", "AI output cannot publish a report", "DRFI remains deterministic", "coordinator action requires a trusted server-side role"]
+}

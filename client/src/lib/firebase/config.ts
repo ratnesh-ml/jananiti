@@ -52,3 +52,7 @@ export const firebaseWebConfig = getFirebaseWebConfig(
 
 export const isFirebaseFreeStageConfigured = Boolean(firebaseWebConfig);
 
+export function getFirebaseEnvironmentLabel(env: Record<string, string | undefined> = import.meta.env) {
+  const configured = env.VITE_JANANITI_ENV?.trim().toLowerCase();
+  return configured === "test" || configured === "preview" ? configured : "production";
+}

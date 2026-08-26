@@ -112,3 +112,11 @@ temp/
 # Manus version file (auto-generated, not part of source)
 client/public/__manus__/version.json
 .project-config.json
+
+# AI training artefacts and source civic data must never enter the public repo.
+ai/datasets/
+ai/adapters/
+ai/checkpoints/
+*.safetensors
+*.gguf
+*.bin

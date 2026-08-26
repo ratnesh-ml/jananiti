@@ -20,6 +20,7 @@ export default defineConfig({
       "client/src/lib/firebase/**/*.test.ts",
       "client/src/lib/judgeDemoFallback.test.ts",
       "client/src/lib/browserLocalDemo.test.ts",
+      "client/src/lib/civicAiAssist.test.ts",
       "client/src/components/EvidencePicker.test.ts",
     ],
   },

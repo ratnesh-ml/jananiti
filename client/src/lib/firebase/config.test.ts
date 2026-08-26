@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getFirebaseWebConfig } from "./config";
+import { getFirebaseEnvironmentLabel, getFirebaseWebConfig } from "./config";
 
 const completeEnvironment = {
   VITE_FIREBASE_API_KEY: "web-api-key",
@@ -30,5 +30,11 @@ describe("Firebase free-stage configuration", () => {
 
   it("does not require Firebase Storage in the zero-cost stage", () => {
     expect(getFirebaseWebConfig(completeEnvironment)?.storageBucket).toBeUndefined();
+  });
+
+  it("labels only explicitly declared non-production Firebase environments as test or preview", () => {
+    expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "test" })).toBe("test");
+    expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "preview" })).toBe("preview");
+    expect(getFirebaseEnvironmentLabel({ VITE_JANANITI_ENV: "staging" })).toBe("production");
   });
 });
