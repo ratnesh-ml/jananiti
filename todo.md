@@ -172,3 +172,8 @@
 - [x] Add an executable Firebase Emulator Suite rule test that verifies public/private report visibility, owner-bound report creation, account-scoped reactions, bounded comments, and one-response verification.
 - [x] Add a Gemma 3 270M non-decisional fine-tuning, serving, client-validation, and Vercel API-boundary scaffold that refuses to fabricate results until consented data, model assets, and evaluation are available.
 - [x] Add a credential-free separate-Firebase-project test-environment guide, test/preview labelling, composite-index manifest, and repository exclusions for source civic data and model artifacts.
+- [x] Redesign the Firebase report composer with an explicit publish-to-community choice, clear private-report alternative, and mobile-safe reporting controls.
+- [x] Add a truthful complaint lifecycle timeline that visualizes currently stored status and clearly distinguishes unavailable coordinator actions.
+- [x] Polish the Firebase workspace loading, Google sign-in, top-bar, focus, and mobile responsive states without copying third-party branding or screens.
+- [x] Add clearly labelled synthetic test-only civic feed records for functional testing, without fabricated verification, social counts, reviews, or production data.
+- [x] Add a deterministic DRFI administrator recommendation view and a constrained local-model triage draft boundary that cannot alter DRFI, verification, status, or assignment.

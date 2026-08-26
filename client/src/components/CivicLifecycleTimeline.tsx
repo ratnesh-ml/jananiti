@@ -1,0 +1,7 @@
+import { getCivicLifecycle } from "@/lib/firebaseWorkspacePresentation";
+import { Check, CircleDot } from "lucide-react";
+
+export default function CivicLifecycleTimeline({ status }: { status: string }) {
+  const timeline = getCivicLifecycle(status);
+  return <section className="mt-4 rounded-2xl border border-[#e5e9ed] bg-white p-3" aria-label="Complaint lifecycle"><div className="flex items-center justify-between gap-3"><p className="text-xs font-bold text-[#263645]">Complaint journey</p><span className="rounded-full bg-[#eef5ff] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0064e0]">Current: {timeline.find((step) => step.state === "current")?.label}</span></div><ol className="mt-3 grid gap-3 sm:grid-cols-5">{timeline.map((step) => <li key={step.key} className="relative min-w-0"><div className="flex items-center gap-2 sm:block"><span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[10px] ${step.state === "complete" ? "bg-[#31a24c] text-white" : step.state === "current" ? "bg-[#0064e0] text-white" : "bg-[#edf0f3] text-[#718191]"}`}>{step.state === "complete" ? <Check className="h-3.5 w-3.5" /> : <CircleDot className="h-3.5 w-3.5" />}</span><div className="sm:mt-2"><p className={`text-xs font-bold ${step.state === "pending" ? "text-[#718191]" : "text-[#1a2935]"}`}>{step.label}</p><p className="mt-0.5 text-[11px] leading-4 text-[#718191]">{step.state === "pending" ? "Pending a verified coordinator update." : step.detail}</p></div></div></li>)}</ol></section>;
+}

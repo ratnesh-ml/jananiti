@@ -1,0 +1,8 @@
+import { getDrfiAdminRecommendation } from "@/lib/drfiTriage";
+import type { DemoDrfiFactors } from "@/lib/browserLocalDemo";
+import { BrainCircuit, ShieldCheck } from "lucide-react";
+
+export default function DrfiAdminRecommendation({ factors }: { factors: DemoDrfiFactors }) {
+  const recommendation = getDrfiAdminRecommendation(factors);
+  return <aside className="mt-4 grid gap-3 rounded-2xl border border-[#dbe8f8] bg-[#f7fbff] p-4 sm:grid-cols-[1fr_auto]"><div><div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#0064e0]" /><p className="text-sm font-bold text-[#173a63]">Deterministic administrator recommendation</p></div><p className="mt-2 text-sm font-semibold text-[#0a1317]">{recommendation.queue}</p><p className="mt-1 text-xs leading-5 text-[#5d6c7b]">Strongest inputs: {recommendation.strongestFactors.join(" and ")}. {recommendation.nextAction}</p></div><span className="self-start rounded-full border border-[#bcd6f4] bg-white px-3 py-2 text-xs font-bold text-[#075eb7]">DRFI {recommendation.score}/100</span><div className="sm:col-span-2 flex items-start gap-2 rounded-xl border border-[#dae4ec] bg-white p-3 text-xs leading-5 text-[#5d6c7b]"><BrainCircuit className="mt-0.5 h-4 w-4 shrink-0 text-[#0064e0]" /><p><strong>Local-model boundary:</strong> an optional approved Gemma adapter may later draft a concise rationale for an administrator to edit. It is currently disabled until consented labels, independent evaluation, and trusted model hosting exist. It cannot change this DRFI score, route, verification, status, or assignment.</p></div></aside>;
+}
