@@ -177,3 +177,8 @@
 - [x] Polish the Firebase workspace loading, Google sign-in, top-bar, focus, and mobile responsive states without copying third-party branding or screens.
 - [x] Add clearly labelled synthetic test-only civic feed records for functional testing, without fabricated verification, social counts, reviews, or production data.
 - [x] Add a deterministic DRFI administrator recommendation view and a constrained local-model triage draft boundary that cannot alter DRFI, verification, status, or assignment.
+- [x] Make the default managed preview route render the intended Firebase Jananiti workspace on desktop and mobile rather than a blank legacy-root thumbnail.
+- [x] Preserve a feature-level checklist from the supplied mobile reference screens without using their images, identity, fabricated counts, or branded UI as in-app assets.
+- [x] Implement an original functional civic mobile shell with Home, Explore, Report, Activity, Profile, notifications, locality controls, and a visible active state.
+- [x] Implement original issue-detail, report/review/confirm, locality discovery, action-center, profile, and onboarding workflows with each visible action connected to real data, a controlled test state, or truthful availability feedback.
+- [x] Add accessible control coverage so buttons and navigation on the Firebase workspace either execute a defined workflow or provide an explicit unavailable-state response.

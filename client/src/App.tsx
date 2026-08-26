@@ -63,7 +63,8 @@ function LegacyRouter() {
 function Router() {
   const hostname = typeof window === "undefined" ? "" : window.location.hostname;
   const pathname = typeof window === "undefined" ? "" : window.location.pathname;
-  if (shouldRenderFirebaseWorkspace(hostname) || (import.meta.env.DEV && pathname === "/firebase-workspace")) return <FirebaseWorkspace />;
+  const isManagedPreviewRoot = import.meta.env.DEV && pathname === "/";
+  if (shouldRenderFirebaseWorkspace(hostname) || isManagedPreviewRoot || (import.meta.env.DEV && pathname === "/firebase-workspace")) return <FirebaseWorkspace />;
   return <LegacyRouter />;
 }
 
