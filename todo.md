@@ -201,5 +201,5 @@
 - [x] Refresh the public hackathon README to document the authorised public Firestore E2E result, enabled indexes, retained QA-only record, and remaining private-report/coordinator/Storage/model limits without overstating production coverage.
 - [x] Synchronize every validated working application change from the managed JanaNiti project to the Vercel-linked `main` branch and verify that `jananiti-team.vercel.app` serves the same current experience.
 - [x] Keep `jananiti-team.vercel.app` focused on the real Firebase-authenticated civic application for public use; do not add or promote a separate judge/demo route on that primary domain.
-- [ ] Align and verify the signed-in mobile Firebase workspace presentation on `jananiti-team.vercel.app` with the managed JanaNiti workspace, preserving the same real user flows and no separate demo route.
-- [ ] Refine the primary Vercel Firebase workspace for public launch by removing or relocating QA/demo and developer-facing technical presentation while preserving truthful privacy, unavailable-service, and real user-flow disclosures.
+- [x] Align and verify the signed-in mobile Firebase workspace presentation on `jananiti-team.vercel.app` with the managed JanaNiti workspace, preserving the same real user flows and no separate demo route.
+- [x] Refine the primary Vercel Firebase workspace for public launch by removing or relocating QA/demo and developer-facing technical presentation while preserving truthful privacy, unavailable-service, and real user-flow disclosures.
