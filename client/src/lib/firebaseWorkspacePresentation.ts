@@ -57,3 +57,7 @@ const testOnlyCivicRecords: TestOnlyCivicRecord[] = [
 export function getTestOnlyCivicRecords(environment: string, isDevelopment: boolean) {
   return environment === "test" || isDevelopment ? testOnlyCivicRecords : [];
 }
+
+export function isPrimaryLaunchHost(hostname: string) {
+  return hostname === "jananiti-team.vercel.app";
+}

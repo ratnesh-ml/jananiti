@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getCivicLifecycle, getTestOnlyCivicRecords } from "./firebaseWorkspacePresentation";
+import { getCivicLifecycle, getTestOnlyCivicRecords, isPrimaryLaunchHost } from "./firebaseWorkspacePresentation";
 
 describe("Firebase workspace presentation", () => {
   it("marks exactly one truthful current lifecycle stage", () => {
@@ -13,5 +13,11 @@ describe("Firebase workspace presentation", () => {
     expect(getTestOnlyCivicRecords("production", false)).toEqual([]);
     expect(getTestOnlyCivicRecords("test", false)).toHaveLength(2);
     expect(getTestOnlyCivicRecords("production", true)[0].isSyntheticTestRecord).toBe(true);
+  });
+
+  it("uses the launch-facing presentation only on the primary public Vercel host", () => {
+    expect(isPrimaryLaunchHost("jananiti-team.vercel.app")).toBe(true);
+    expect(isPrimaryLaunchHost("jananiti-fspr6tck.manus.space")).toBe(false);
+    expect(isPrimaryLaunchHost("jananiti009.vercel.app")).toBe(false);
   });
 });
